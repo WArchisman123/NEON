@@ -44,6 +44,7 @@
    - [9.5 Facility Power Quality & Load Profile](#95-facility-power-quality--load-profile)
 10. [Database Architecture & Supabase DDL](#10-database-architecture--supabase-ddl)
 11. [Mobile Optimization & Responsive Layout Strategy](#11-mobile-optimization--responsive-layout-strategy)
+12. [Environment Configuration & Secret Keys Specification (.env.local)](#12-environment-configuration--secret-keys-specification-envlocal)
 
 ---
 
@@ -798,3 +799,31 @@ create policy "Services catalog viewable by authenticated users"
 3. **Slide-Up Bottom Sheets (Drawers)**: Component drill-downs (such as BESS cell thermals or Solar string MPPTs) open as swipeable bottom sheets on mobile devices rather than right-hand desktop side-drawers.
 4. **Offline Resilience & Reconnection Banners**: If field cellular data drops while on a remote solar farm, the client caches the last telemetry packet, renders an ambient pulsing amber banner (`Reconnecting to Neon Edge Gateway...`), and automatically resynchronizes via Supabase Realtime when connectivity is restored.
 5. **High-Contrast Dark Aesthetic**: The deep obsidian background (`#060709`) combined with high-luminance neon pink (`#FF2A85`) and neon cyan (`#00F0FF`) ensures full readability on mobile screens even in harsh outdoor sunlight at remote solar sites.
+
+---
+
+## 12. Environment Configuration & Secret Keys Specification (`.env.local`)
+
+Neon Energy relies on credentials and endpoints spanning Authentication (Clerk), Relational Database & Realtime (Supabase), Direct PostgreSQL Connection, and Product Telemetry Analytics (PostHog).
+
+### 12.1 Environment Variable Master Registry
+
+| Environment Variable Key | Exposure Scope | Service / Provider | Purpose & Technical Function |
+|---|---|---|---|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Public / Client-Side | Clerk (`@clerk/nextjs`) | The public API key used by the Next.js client to initialize ClerkProvider, load authentication sessions, handle sign-in widgets, and manage organization switching. |
+| `CLERK_SECRET_KEY` | Server-Only / Secret | Clerk Backend API | Secret authentication key used exclusively on the server (Server Actions, Route Handlers, Middleware) to verify session JWTs, query Clerk Backend API, and manage organization memberships. |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Public / Client-Side | Clerk Routing | Custom sign-in route URL (`/sign-in`) where unauthenticated users are redirected when accessing protected dashboard views. |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Public / Client-Side | Clerk Routing | Custom sign-up route URL (`/sign-up`) for new user registrations and organization onboarding. |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | Public / Client-Side | Clerk Routing | Fallback destination URL (`/`) after a successful user sign-in session is created. |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | Public / Client-Side | Clerk Routing | Fallback destination URL (`/`) after a successful user registration and organization creation. |
+| `NEXT_PUBLIC_SUPABASE_URL` | Public / Client-Side | Supabase | The HTTPS API root URL for the Neon Energy Supabase project (`https://uoiodhmahcpwedwajdtd.supabase.co`). Used by both frontend and backend to communicate with PostgreSQL via PostgREST, Realtime WebSockets, and Supabase Storage. |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public / Client-Side | Supabase | Public anonymous client API key (`sb_publishable_...`). Encoded in client requests to access public resources and authenticated user queries strictly scoped by Postgres Row Level Security (RLS) policies. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-Only / Secret | Supabase Admin | High-privilege administrative service key (`eyJhbGciOi...`). Bypasses all Row Level Security (RLS). Must **NEVER** be leaked to the client bundle; strictly restricted to edge telemetry ingestion workers, system cron jobs, and Clerk webhook sync routines. |
+| `TURIA_DB_supabse_pwd` | Server-Only / Secret | Supabase PostgreSQL | Direct database master password for the Supabase PostgreSQL database instance (`VncVw2...`). Used for direct psql connection strings, migration tools, and high-throughput connection pooling setups. |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Public / Client-Side | PostHog Product Analytics | Public project token (`phc_qqTe75...`) for PostHog client analytics. Used to track feature adoption, page views, flow canvas node interactions, and feature flags. |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Public / Client-Side | PostHog API Host | Ingestion endpoint host URL (`https://us.i.posthog.com`) routing telemetry events to PostHog's US cloud cluster. |
+
+### 12.2 Security & Isolation Mandates
+1. **Never Expose Secret Keys**: Keys lacking the `NEXT_PUBLIC_` prefix (`CLERK_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TURIA_DB_supabse_pwd`) are strictly prohibited in React Client Components (`"use client"`).
+2. **RLS Enforcement**: Any client-side Supabase query using `NEXT_PUBLIC_SUPABASE_ANON_KEY` is bounded by RLS matching the user's Clerk organization ID. Administrative writes that bypass RLS must only occur in secure Server Actions or Route Handlers utilizing `SUPABASE_SERVICE_ROLE_KEY`.
+3. **Telemetry Ingestion Security**: Automated sensor telemetry ingested at `POST /api/v1/telemetry/ingest` verifies an ingestion secret or service role signature before writing to `telemetry_snapshots`.

@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
+@theme {
+  --color-void: #060709;
+  --color-obsidian: #0B0D13;
+  --color-elevated: #121622;
+  --color-neon-pink: #FF2A85;
+  --color-solar: #FFD600;
+  --color-bess: #00F0FF;
+  --color-grid: #9D4EDD;
+  --color-dg: #FF6B00;
+  --color-neon-green: #00E676;
+  --color-neon-amber: #FFAB00;
+  --color-neon-red: #FF1744;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --background: #060709;
+  --foreground: #F8FAFC;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color-scheme: dark;
+  background-color: #060709;
+  color: #F8FAFC;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Clerk Cyber Black / Neon Pink Overrides
+   Guarantees zero dark-on-dark text and zero white inputs across all Clerk flows
+   ========================================================================== */
+.cl-card,
+.cl-modalContent,
+.cl-userButtonPopoverCard,
+.cl-organizationSwitcherPopoverCard,
+.cl-organizationProfile,
+.cl-userProfile,
+.cl-createOrganization {
+  background-color: #0B0D13 !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.cl-headerTitle,
+.cl-profileSectionTitleText,
+.cl-profileSectionTitle,
+.cl-formFieldLabel,
+.cl-formFieldLabelRow,
+.cl-formTitle {
+  color: #F8FAFC !important;
+}
+
+.cl-headerSubtitle,
+.cl-formFieldInfoText,
+.cl-formFieldHintText,
+.cl-identityPreviewText,
+.cl-footerActionText,
+.cl-fileDropAreaHint,
+.cl-formSubtitle,
+.cl-breadcrumbsItem {
+  color: #94A3B8 !important;
+}
+
+.cl-formFieldInput,
+.cl-input,
+input[name="name"],
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background-color: #121622 !important;
+  color: #F8FAFC !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.cl-formFieldInput:focus,
+.cl-input:focus {
+  border-color: #FF2A85 !important;
+  box-shadow: 0 0 0 1px #FF2A85 !important;
+}
+
+.cl-formButtonPrimary {
+  background-color: #FF2A85 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 15px rgba(255, 42, 133, 0.4) !important;
+  border: 1px solid rgba(255, 42, 133, 0.6) !important;
+}
+
+.cl-formButtonPrimary:hover {
+  background-color: #ff1475 !important;
+  box-shadow: 0 0 22px rgba(255, 42, 133, 0.6) !important;
+}
+
+.cl-fileDropArea {
+  background-color: #121622 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #F8FAFC !important;
+}
+
+.cl-fileDropAreaButtonPrimary {
+  color: #FF2A85 !important;
+}
+
+.cl-footerActionLink {
+  color: #FF2A85 !important;
+}
+
+.cl-footerActionLink:hover {
+  color: #ff559f !important;
+}
+
+/* Custom Neon Glow Utilities */
+.glow-pink {
+  box-shadow: 0 0 20px -3px rgba(255, 42, 133, 0.45);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px -3px rgba(0, 240, 255, 0.45);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 20px -3px rgba(255, 214, 0, 0.45);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px -3px rgba(0, 230, 118, 0.45);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px -3px rgba(255, 107, 0, 0.45);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px -3px rgba(157, 78, 221, 0.45);
+}
+
+.glow-border-pink {
+  border-color: rgba(255, 42, 133, 0.6);
+  box-shadow: inset 0 0 12px rgba(255, 42, 133, 0.15), 0 0 15px rgba(255, 42, 133, 0.25);
+}
+
+/* Directional Flow Conduit Dashoffset Animation */
+@keyframes flowForward {
+  from {
+    stroke-dashoffset: 28;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-flow-forward {
+  animation: flowForward 1.2s linear infinite;
+}
+
+@keyframes flowBackward {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 28;
+  }
+}
+
+.animate-flow-backward {
+  animation: flowBackward 1.2s linear infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px rgba(255, 42, 133, 0.4));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(255, 42, 133, 0.8));
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* Custom Scrollbar for Cyber Panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060709;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e2433;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF2A85;
 }

@@ -85,7 +85,23 @@ Do not code before creating the prompt unless the user explicitly instructs to s
 - **Validation**: Zod (`zod`)
 - **Payments**: Stripe (`stripe` and `@stripe/stripe-js`)
 
+### Available Supporting Skills Context (`.agents/skills/`)
+The repository includes pre-installed skill packages under `.agents/skills/`. Read clearly needed supporting skills from this approved skill list before implementing corresponding domain features:
+
+| Skill Directory | Core Domain & Focus | When to Consult |
+|---|---|---|
+| `.agents/skills/shadcn/` | shadcn/ui primitives, Tailwind styling, form composition, and accessibility rules | Building UI components, buttons, dialogs, drawers, badges, and layout primitives |
+| `.agents/skills/clerk/` | Clerk authentication router and core quickstart patterns | Adding and managing user authentication and routing |
+| `.agents/skills/clerk-orgs/` | B2B Organizations, organization switcher, member roles, and custom claims | Implementing multi-tenancy, tenant data scoping, and RBAC matrix |
+| `.agents/skills/clerk-nextjs-patterns/` | Next.js App Router middleware, Server Actions with Clerk, and session token handling | Protecting API routes, Server Actions, and auth guards |
+| `.agents/skills/clerk-billing/` | Clerk Billing, subscription tiers, plan gating with `has()`, and Stripe checkout | Implementing SaaS subscription tiers (Starter, Pro, Enterprise) |
+| `.agents/skills/clerk-webhooks/` | Clerk webhook verification (`svix`, `verifyWebhook`) | Syncing Clerk user and organization changes into Supabase database |
+| `.agents/skills/supabase/` | Supabase Client (`@supabase/supabase-js`), SSR, Realtime channels, Storage buckets | Handling PostgreSQL persistence, realtime WebSocket streams, and PDF reports |
+| `.agents/skills/supabase-postgres-best-practices/` | Postgres schema design, RLS security policies, compound indexing, performance | Writing migrations, table schemas, foreign keys, and RLS policies |
+| `.agents/skills/migrate-radix-to-base/` | Migrating Radix UI primitives to Base UI | When converting shadcn primitives to base-ui components |
+
 ### Strict Rules:
+- **Strict Frontend Design System Adherence**: All frontend views, components, cards, drawers, and modal sheets must strictly adhere to the Cyber Black / Neon Pink design tokens (`#060709` Void Black background, `#0B0D13` Obsidian cards, `#121622` elevated modals, `#FF2A85` Neon Pink glow accents, `font-mono` for all electrical metrics). Never introduce light themes, generic grey palettes, or standard un-styled UI elements.
 - **Never use Supabase Auth**: Authentication must always be handled via **Clerk**.
 - **No Light Themes**: Neon Energy is strictly a **Cyber Black / Neon Pink** high-contrast platform. Do not add white background page containers or generic grey cards.
 - **Mobile-First Touch Ergonomics**: All interactive elements must satisfy minimum $48 \times 48\ px$ touch targets on mobile viewports.
@@ -110,10 +126,12 @@ Prompt files live in the `prompts/` directory. Example naming conventions:
 
 Each prompt must include:
 - **Goal**
+- **Relevant Agent Skills** (Explicitly list all consulted supporting skills from `.agents/skills/`)
 - **Existing Code Inspected**
 - **Decisions or Assumptions**
 - **Files Likely to Change**
 - **Implementation Requirements**
+- **Design System & Visual Adherence** (Verify adherence to Void Black `#060709`, Obsidian `#0B0D13`, Neon Pink `#FF2A85`, `font-mono` telemetry, and $\ge 48\ px$ mobile touch ergonomics)
 - **Security & RBAC Requirements**
 - **Acceptance Criteria**
 - **Checks to Run**

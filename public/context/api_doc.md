@@ -81,6 +81,23 @@ Authorization: Bearer neon_gw_live_9f8d7c6b5a4e3d2c1b0a
 X-Site-UUID: 3fa85f64-5717-4562-b3fc-2c963f66afa6
 ```
 
+### 2.3 Environment Keys & Credentials Matrix (`.env.local`)
+
+| Environment Variable | Provider | Target Layer | Usage Context |
+|---|---|---|---|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk | Client (`@clerk/nextjs`) | ClerkProvider initialization & frontend auth |
+| `CLERK_SECRET_KEY` | Clerk | Server API / Route Handlers | Server-side session verification & org queries |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Clerk | Routing | Sign-in redirection endpoint (`/sign-in`) |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Clerk | Routing | Sign-up redirection endpoint (`/sign-up`) |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | Clerk | Routing | Post-login redirect (`/`) |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | Clerk | Routing | Post-registration redirect (`/`) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase | Client & Server | Supabase project API root (`https://uoiodhmahcpwedwajdtd.supabase.co`) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase | Client-Side | Public Supabase client, RLS scoped |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase | Server-Only | Admin database bypass for background ingestion & sync |
+| `TURIA_DB_supabse_pwd` | Supabase | Database Server | Direct PostgreSQL connection password |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | PostHog | Client-Side | Telemetry product analytics token |
+| `NEXT_PUBLIC_POSTHOG_HOST` | PostHog | Client-Side | PostHog ingest endpoint (`https://us.i.posthog.com`) |
+
 ---
 
 ## 3. Standard Response & Error Envelopes
