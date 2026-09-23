@@ -18,11 +18,14 @@ import {
   Clock,
   CheckCircle2,
   Wrench,
+  CreditCard,
 } from "lucide-react";
 import { SiteRecord, SiteDeviceRecord, HourlyTelemetryRecord } from "@/lib/energy/types";
 import { SchematicNodeFlow } from "@/components/energy-flow/schematic-node-flow";
 import { EnergyFlowVisualizer } from "@/components/energy-flow/energy-flow-visualizer";
 import { PowerConsumptionWorkspace } from "@/components/analytics/power-consumption-workspace";
+import { RenewalSubscriptionModal } from "@/components/subscription/renewal-subscription-modal";
+import { Button } from "@/components/ui/button";
 
 interface SiteDetailViewProps {
   site: SiteRecord;
@@ -35,6 +38,8 @@ export function SiteDetailView({
   devices,
   hourlyTelemetry,
 }: SiteDetailViewProps) {
+  const [currentSite, setCurrentSite] = useState(site);
+  const [isRenewalOpen, setIsRenewalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "flow" | "analytics" | "alarms"
   >("flow");
@@ -84,11 +89,40 @@ export function SiteDetailView({
           <span className="text-white font-bold">{site.name}</span>
         </Link>
 
-        <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/25">
-          <span className="size-1.5 rounded-full bg-[#00E676] animate-pulse" />
-          {site.status.toUpperCase()}
-        </span>
+        {currentSite.subscription_status === "expired" ? (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40">
+            <AlertTriangle className="size-3" />
+            EXPIRED LICENSE
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-[#00E676]/10 text-[#00E676] border border-[#00E676]/25">
+            <span className="size-1.5 rounded-full bg-[#00E676] animate-pulse" />
+            {currentSite.status.toUpperCase()}
+          </span>
+        )}
       </div>
+
+      {/* Expired Subscription Warning Banner */}
+      {currentSite.subscription_status === "expired" && (
+        <div className="p-3 sm:p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center gap-2.5 text-amber-300">
+            <AlertTriangle className="size-5 shrink-0 text-amber-400" />
+            <div>
+              <strong className="text-amber-200 block sm:inline">Telemetry Feed Suspended: </strong>
+              <span>This site subscription has expired. Live Modbus ingestion and automated dispatch optimization are paused.</span>
+            </div>
+          </div>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setIsRenewalOpen(true)}
+            className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs h-8 px-4 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0"
+          >
+            <CreditCard className="size-3.5 mr-1.5" />
+            Renew Subscription Now
+          </Button>
+        </div>
+      )}
 
       {/* Site Master Hero Card */}
       <div className="rounded-xl bg-[#0B0D13] border border-white/[0.08] p-4 sm:p-6 relative overflow-hidden shadow-xl">
@@ -453,6 +487,20 @@ export function SiteDetailView({
           </div>
         </div>
       )}
+
+      {/* Renewal Subscription Modal */}
+      <RenewalSubscriptionModal
+        site={currentSite}
+        isOpen={isRenewalOpen}
+        onClose={() => setIsRenewalOpen(false)}
+        onRenewSuccess={() => {
+          setCurrentSite((prev) => ({
+            ...prev,
+            subscription_status: "active",
+            status: "online",
+          }));
+        }}
+      />
     </div>
   );
 }

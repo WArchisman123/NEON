@@ -84,7 +84,13 @@ function formatKwpOrMwp(kwp?: number): string {
   return `${kwp.toLocaleString()} kWp`;
 }
 
-export function SiteCockpitCard({ site }: { site: SiteData }) {
+export function SiteCockpitCard({
+  site,
+  onRenew,
+}: {
+  site: SiteData;
+  onRenew?: (site: SiteData) => void;
+}) {
   const isExpired = site.subscription_status === "expired";
   const isIslanded = !site.has_grid;
 
@@ -184,9 +190,24 @@ export function SiteCockpitCard({ site }: { site: SiteData }) {
 
         {/* Expired Warning Banner */}
         {isExpired && (
-          <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 font-mono flex items-center gap-2">
-            <AlertTriangle className="size-3.5 shrink-0 text-amber-400" />
-            <span>Telemetry feed paused. Renew subscription to reactivate live Modbus sync.</span>
+          <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 font-mono flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="size-3.5 shrink-0 text-amber-400" />
+              <span>Telemetry feed paused. Renew subscription to reactivate live Modbus sync.</span>
+            </div>
+            {onRenew && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onRenew(site);
+                }}
+                className="shrink-0 px-2 py-0.5 rounded bg-amber-500 text-black font-bold text-[10px] hover:bg-amber-400 transition-colors"
+              >
+                Renew Now
+              </button>
+            )}
           </div>
         )}
 
@@ -424,17 +445,32 @@ export function SiteCockpitCard({ site }: { site: SiteData }) {
           </strong>
         </div>
 
-        <Link
-          href={`/sites/${site.id}`}
-          className={`inline-flex items-center gap-1.5 text-xs font-bold transition-colors group/link ${
-            isExpired
-              ? "text-amber-400 hover:text-amber-300"
-              : "text-[#FF2A85] hover:text-[#ff559f]"
-          }`}
-        >
-          <span>{isExpired ? "Renew Subscription" : "View Energy Flow"}</span>
-          <ArrowRight className="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
-        </Link>
+        {isExpired && onRenew ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onRenew(site);
+            }}
+            className="inline-flex items-center gap-1.5 text-xs font-bold transition-colors group/link text-amber-400 hover:text-amber-300 cursor-pointer"
+          >
+            <span>Renew Subscription</span>
+            <ArrowRight className="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
+          </button>
+        ) : (
+          <Link
+            href={`/sites/${site.id}`}
+            className={`inline-flex items-center gap-1.5 text-xs font-bold transition-colors group/link ${
+              isExpired
+                ? "text-amber-400 hover:text-amber-300"
+                : "text-[#FF2A85] hover:text-[#ff559f]"
+            }`}
+          >
+            <span>{isExpired ? "Renew Subscription" : "View Energy Flow"}</span>
+            <ArrowRight className="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
+          </Link>
+        )}
       </div>
     </div>
   );

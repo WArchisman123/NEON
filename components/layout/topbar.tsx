@@ -2,12 +2,14 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { UserButton, OrganizationSwitcher, useAuth, useOrganization } from "@clerk/nextjs";
 import { Bell, Search } from "lucide-react";
 
 const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
 
 export function Topbar() {
+  const router = useRouter();
   const { orgId } = useAuth();
   const { organization } = useOrganization();
 
@@ -55,31 +57,21 @@ export function Topbar() {
         </div>
       </div>
 
-      {/* Center: Live Fleet Health Marquee (Desktop) */}
-      <div className="hidden xl:flex items-center gap-4 px-3.5 py-1.5 rounded-full bg-[#121622] border border-white/[0.06] text-xs font-mono">
-        <span className="flex items-center gap-1.5 text-[#00E676] font-semibold">
-          <span className="size-2 rounded-full bg-[#00E676] animate-pulse" />
-          Fleet Normal
-        </span>
-        <span className="text-slate-700">|</span>
-        <span className="text-slate-300">
-          Live Power: <strong className="text-[#FFD600]">3.42 MW</strong>
-        </span>
-        <span className="text-slate-700">|</span>
-        <span className="text-slate-300">
-          Fleet SoC: <strong className="text-[#00F0FF]">78.4%</strong>
-        </span>
-        <span className="text-slate-700">|</span>
-        <span className="text-slate-300">
-          Net Grid: <strong className="text-[#9D4EDD]">-420 kW</strong>
-        </span>
-      </div>
-
       {/* Right: Search, Alerts & Clerk UserButton */}
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Quick Search Shortcut */}
         <button
           type="button"
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              const searchInput = document.getElementById("fleet-search-input");
+              if (searchInput) {
+                searchInput.focus();
+              } else {
+                router.push("/?focusSearch=true");
+              }
+            }
+          }}
           className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#121622] border border-white/[0.08] text-xs font-mono text-slate-400 hover:text-white hover:border-white/[0.2] transition-colors"
         >
           <Search className="size-3.5 text-slate-400" />
@@ -111,9 +103,13 @@ export function Topbar() {
               },
             }}
           />
-          <span className="hidden md:inline-flex px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase rounded bg-[#FF2A85]/20 text-[#FF2A85] border border-[#FF2A85]/40 shadow-[0_0_8px_rgba(255,42,133,0.3)]">
+          <Link
+            href="/subscription"
+            title="Manage Subscriptions & Site Licenses"
+            className="hidden md:inline-flex px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase rounded bg-[#FF2A85]/20 text-[#FF2A85] border border-[#FF2A85]/40 shadow-[0_0_8px_rgba(255,42,133,0.3)] hover:bg-[#FF2A85]/30 hover:shadow-[0_0_14px_rgba(255,42,133,0.5)] transition-all cursor-pointer"
+          >
             PRO
-          </span>
+          </Link>
         </div>
       </div>
     </header>

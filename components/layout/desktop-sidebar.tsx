@@ -5,12 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Zap,
   BarChart3,
   Wrench,
   Palette,
   Settings,
   Radio,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,8 +23,8 @@ export function DesktopSidebar({ className }: DesktopSidebarProps) {
 
   const navigation = [
     { name: "Fleet Cockpit", href: "/", icon: LayoutDashboard },
-    { name: "Energy Flow", href: "/flow", icon: Zap },
     { name: "Analytics & Yield", href: "/analytics", icon: BarChart3 },
+    { name: "Subscriptions", href: "/subscription", icon: CreditCard },
     { name: "Maintenance Hub", href: "/maintenance", icon: Wrench },
     { name: "Design System", href: "/design-system", icon: Palette },
     { name: "System Settings", href: "/settings", icon: Settings },
