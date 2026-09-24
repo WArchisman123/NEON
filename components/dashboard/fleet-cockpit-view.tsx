@@ -227,7 +227,7 @@ export function FleetCockpitView({
             </p>
           </div>
 
-          {/* <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <Link href="/design-system">
               <Button
                 variant="outline"
