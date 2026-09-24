@@ -193,7 +193,7 @@ export function FleetCockpitView({ initialSites }: Props) {
           {/* Sync Button & Timestamp */}
           <div className="flex items-center gap-2">
             {lastUpdated && (
-              <span className="text-[10px] font-mono text-slate-500">
+              <span className="text-[10px] font-mono text-slate-500" suppressHydrationWarning>
                 Synced {lastUpdated.toLocaleTimeString()}
               </span>
             )}
