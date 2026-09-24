@@ -49,7 +49,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Link href="/design-system">
               <Button variant="secondary" size="sm">
                 Design System
@@ -59,7 +59,7 @@ export default async function HomePage() {
               <Plus className="size-3.5" />
               Add Solar / BESS Site
             </Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Fleet Cockpit View connected to client hooks and Network-visible API */}

@@ -60,7 +60,7 @@ export function Topbar() {
       {/* Right: Search, Alerts & Clerk UserButton */}
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Quick Search Shortcut */}
-        <button
+        {/* <button
           type="button"
           onClick={() => {
             if (typeof window !== "undefined") {
@@ -79,7 +79,7 @@ export function Topbar() {
           <kbd className="px-1.5 py-0.5 rounded bg-black/50 text-[10px] text-slate-400 border border-white/[0.1]">
             ⌘K
           </kbd>
-        </button>
+        </button> */}
 
         {/* Alarm Alert Bell with Glowing Badge */}
         <button
