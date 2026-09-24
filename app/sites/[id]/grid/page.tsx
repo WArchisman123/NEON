@@ -139,7 +139,7 @@ export default async function GridSubsystemPage({ params }: Props) {
                 Active Tariff
               </span>
               <div className="text-lg font-bold text-[#FF2A85] mt-0.5">
-                ${peakRate}/kWh
+                ₹{peakRate}/kWh
               </div>
               <span className="text-[10px] text-slate-500">PEAK TARIFF</span>
             </div>
@@ -247,7 +247,7 @@ export default async function GridSubsystemPage({ params }: Props) {
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Avoided Utility MD Penalty</span>
-                  <span className="text-[#00E676] font-bold">$1,280 / month saved</span>
+                  <span className="text-[#00E676] font-bold">₹1,05,000 / month saved</span>
                 </div>
               </div>
 

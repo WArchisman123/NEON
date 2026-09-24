@@ -13,7 +13,7 @@ export function MaintenanceCatalogPreview() {
       id: "bess-coolant",
       category: "BESS Specialized",
       badgeVariant: "bess" as const,
-      price: "$1,250",
+      price: "₹1,05,000",
       title: "Liquid Chiller Coolant Flush & Refill",
       description:
         "Full drain, pressure flush, dielectric coolant refill, and pump flow rate calibration to prevent BESS thermal derating.",
@@ -27,7 +27,7 @@ export function MaintenanceCatalogPreview() {
       id: "solar-drone",
       category: "Solar PV Specialized",
       badgeVariant: "solar" as const,
-      price: "$850",
+      price: "₹72,000",
       title: "Drone IR Aerial Thermography & Hotspot Scan",
       description:
         "Autonomous radiometric drone sweep identifying micro-cracks, diode bypass faults, and soiling hotspot losses.",

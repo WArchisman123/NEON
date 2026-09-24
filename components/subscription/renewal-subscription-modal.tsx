@@ -59,23 +59,23 @@ export function RenewalSubscriptionModal({
   const totalCapacity = (site.solar_capacity_kwp || 0) + (site.bess_power_kw || 0);
 
   let tierName = "Pro Commercial";
-  let monthlyBase = 599;
-  let annualBase = 5990;
+  let monthlyBase = 49500;
+  let annualBase = 495000;
 
   if (totalCapacity <= 500) {
     tierName = "Starter";
-    monthlyBase = 199;
-    annualBase = 1990;
+    monthlyBase = 16500;
+    annualBase = 165000;
   } else if (totalCapacity > 2500) {
     tierName = "Utility Enterprise";
-    monthlyBase = 1499;
-    annualBase = 14990;
+    monthlyBase = 124000;
+    annualBase = 1240000;
   }
 
   // Add-on rates
-  const fastPollingRate = billingCycle === "annual" ? 490 : 49;
-  const complianceRate = billingCycle === "annual" ? 990 : 99;
-  const slaRate = billingCycle === "annual" ? 1490 : 149;
+  const fastPollingRate = billingCycle === "annual" ? 40000 : 4000;
+  const complianceRate = billingCycle === "annual" ? 80000 : 8000;
+  const slaRate = billingCycle === "annual" ? 120000 : 12000;
 
   let addonsTotal = 0;
   if (addonFastPolling) addonsTotal += fastPollingRate;
@@ -84,9 +84,9 @@ export function RenewalSubscriptionModal({
 
   const basePrice = billingCycle === "annual" ? annualBase : monthlyBase;
   const subtotal = basePrice + addonsTotal;
-  const estimatedTax = Math.round(subtotal * 0.0825 * 100) / 100;
-  const totalDue = Math.round((subtotal + estimatedTax) * 100) / 100;
-  const annualSavings = Math.round((monthlyBase * 12 - annualBase) + (billingCycle === "annual" ? 98 : 0));
+  const estimatedTax = Math.round(subtotal * 0.18);
+  const totalDue = subtotal + estimatedTax;
+  const annualSavings = Math.round(monthlyBase * 12 - annualBase);
 
   const handleCheckout = async () => {
     setIsSubmitting(true);
@@ -198,7 +198,7 @@ export function RenewalSubscriptionModal({
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Amount Authorized</span>
-                  <span className="text-[#00E676] font-bold">${totalDue.toFixed(2)}</span>
+                  <span className="text-[#00E676] font-bold">₹{totalDue.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Next Renewal Date</span>
@@ -262,10 +262,10 @@ export function RenewalSubscriptionModal({
                     </div>
                     <div className="text-xs font-bold text-white">Annual Billing (Recommended)</div>
                     <div className="text-lg font-black text-white font-mono mt-1">
-                      ${annualBase.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ yr</span>
+                      ₹{annualBase.toLocaleString("en-IN")} <span className="text-xs text-slate-400 font-normal">/ yr</span>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1">
-                      Save ${annualSavings} compared to monthly billing. Includes 1-year data retention.
+                      Save ₹{annualSavings.toLocaleString("en-IN")} compared to monthly billing. Includes 1-year data retention.
                     </p>
                   </button>
 
@@ -280,7 +280,7 @@ export function RenewalSubscriptionModal({
                   >
                     <div className="text-xs font-bold text-white">Monthly Billing</div>
                     <div className="text-lg font-black text-white font-mono mt-1">
-                      ${monthlyBase} <span className="text-xs text-slate-400 font-normal">/ mo</span>
+                      ₹{monthlyBase.toLocaleString("en-IN")} <span className="text-xs text-slate-400 font-normal">/ mo</span>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1">
                       Flexible month-to-month commitment. Cancel or upgrade anytime.
@@ -320,7 +320,7 @@ export function RenewalSubscriptionModal({
                       </div>
                     </div>
                     <span className="text-xs font-mono font-bold text-[#00F0FF]">
-                      +${fastPollingRate}{billingCycle === "annual" ? "/yr" : "/mo"}
+                      +₹{fastPollingRate.toLocaleString("en-IN")}{billingCycle === "annual" ? "/yr" : "/mo"}
                     </span>
                   </label>
 
@@ -349,7 +349,7 @@ export function RenewalSubscriptionModal({
                       </div>
                     </div>
                     <span className="text-xs font-mono font-bold text-[#FFD600]">
-                      +${complianceRate}{billingCycle === "annual" ? "/yr" : "/mo"}
+                      +₹{complianceRate.toLocaleString("en-IN")}{billingCycle === "annual" ? "/yr" : "/mo"}
                     </span>
                   </label>
 
@@ -378,7 +378,7 @@ export function RenewalSubscriptionModal({
                       </div>
                     </div>
                     <span className="text-xs font-mono font-bold text-[#9D4EDD]">
-                      +${slaRate}{billingCycle === "annual" ? "/yr" : "/mo"}
+                      +₹{slaRate.toLocaleString("en-IN")}{billingCycle === "annual" ? "/yr" : "/mo"}
                     </span>
                   </label>
                 </div>
@@ -391,23 +391,23 @@ export function RenewalSubscriptionModal({
                 </div>
                 <div className="flex justify-between text-slate-300">
                   <span>{tierName} Base Tier ({billingCycle})</span>
-                  <span>${basePrice.toFixed(2)}</span>
+                  <span>₹{basePrice.toLocaleString("en-IN")}</span>
                 </div>
                 {addonsTotal > 0 && (
                   <div className="flex justify-between text-slate-300">
                     <span>Performance Add-ons</span>
-                    <span>+${addonsTotal.toFixed(2)}</span>
+                    <span>+₹{addonsTotal.toLocaleString("en-IN")}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-slate-400">
-                  <span>Estimated Taxes & Cloud Ingestion (8.25%)</span>
-                  <span>+${estimatedTax.toFixed(2)}</span>
+                  <span>Estimated GST & Cloud Ingestion (18%)</span>
+                  <span>+₹{estimatedTax.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between">
                   <span className="text-white font-bold text-sm">Total Due Today</span>
                   <div className="text-right">
                     <span className="text-xl font-black text-[#FF2A85] tracking-tight">
-                      ${totalDue.toFixed(2)}
+                      ₹{totalDue.toLocaleString("en-IN")}
                     </span>
                     <span className="text-[10px] text-slate-400 block font-normal">
                       billed {billingCycle}
@@ -433,7 +433,7 @@ export function RenewalSubscriptionModal({
                   ) : (
                     <>
                       <CreditCard className="size-4 mr-2" />
-                      Proceed to Checkout (${totalDue.toFixed(2)})
+                      Proceed to Checkout (₹{totalDue.toLocaleString("en-IN")})
                       <ArrowRight className="size-4 ml-2" />
                     </>
                   )}

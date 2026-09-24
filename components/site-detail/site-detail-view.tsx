@@ -69,7 +69,7 @@ export function SiteDetailView({
       severity: "info" as const,
       asset: "Utility Grid Intertie",
       code: "TOU_PEAK_ENTERED",
-      message: "Switched to Peak TOU tariff slot ($0.18/kWh); BESS peak-shaving dispatch engaged",
+      message: "Switched to Peak TOU tariff slot (₹8.50/kWh); BESS peak-shaving dispatch engaged",
       timestamp: "2h 10m ago",
       acknowledged: true,
     },

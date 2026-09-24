@@ -297,7 +297,7 @@ export function PowerConsumptionWorkspace({
             {summary.peakDemandShavedKw} kW
           </div>
           <div className="text-[11px] text-[#00E676] mt-0.5">
-            ${summary.avoidedMdPenalties.toLocaleString()} MD penalty cut
+            ₹{summary.avoidedMdPenalties.toLocaleString("en-IN")} MD penalty cut
           </div>
         </div>
 
@@ -310,7 +310,7 @@ export function PowerConsumptionWorkspace({
             {summary.dieselFuelDisplacedLiters.toLocaleString()} L
           </div>
           <div className="text-[11px] text-[#00E676] mt-0.5">
-            ${summary.dieselCostSaved.toLocaleString()} fuel cost saved
+            ₹{summary.dieselCostSaved.toLocaleString("en-IN")} fuel cost saved
           </div>
         </div>
 
@@ -569,7 +569,7 @@ export function PowerConsumptionWorkspace({
               <div className="text-right">
                 <span className="text-slate-400 block">Tariff Delta</span>
                 <span className="text-[#FF2A85] font-bold">
-                  +${((currentSite.peak_tariff_rate || 0.18) - (currentSite.offpeak_tariff_rate || 0.07)).toFixed(2)}/kWh
+                  +₹{((currentSite.peak_tariff_rate || 8.5) - (currentSite.offpeak_tariff_rate || 4.5)).toFixed(2)}/kWh
                 </span>
               </div>
             </div>
@@ -580,7 +580,7 @@ export function PowerConsumptionWorkspace({
                 <span className="text-slate-500 text-[10px]">Charging off-peak, discharging peak</span>
               </div>
               <span className="text-base font-bold text-[#00E676]">
-                +${summary.touArbitrageSavings.toLocaleString()}
+                +₹{summary.touArbitrageSavings.toLocaleString("en-IN")}
               </span>
             </div>
 
@@ -590,7 +590,7 @@ export function PowerConsumptionWorkspace({
                 <span className="text-slate-500 text-[10px]">Capping utility MD below sanctioned limit</span>
               </div>
               <span className="text-base font-bold text-[#00E676]">
-                +${summary.avoidedMdPenalties.toLocaleString()} / mo
+                +₹{summary.avoidedMdPenalties.toLocaleString("en-IN")} / mo
               </span>
             </div>
           </div>

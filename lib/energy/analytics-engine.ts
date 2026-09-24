@@ -58,8 +58,8 @@ export function calculateAnalyticsSummary(
   let peakDemandRecordedKw = 0;
   let touArbitrageSavings = 0;
 
-  const peakTariff = site.peak_tariff_rate || 0.18;
-  const offpeakTariff = site.offpeak_tariff_rate || 0.07;
+  const peakTariff = site.peak_tariff_rate || 8.50;
+  const offpeakTariff = site.offpeak_tariff_rate || 4.50;
 
   for (const row of telemetry) {
     const sKwh = row.solar_energy_kwh || row.avg_solar_kw || 0;
@@ -108,11 +108,11 @@ export function calculateAnalyticsSummary(
   const peakDemandShavedKw = Math.round(
     site.has_bess ? (site.bess_power_kw || 300) * 0.8 : 0
   );
-  const avoidedMdPenalties = site.has_bess ? Math.round(contractedMd * 1.6) : 0;
+  const avoidedMdPenalties = site.has_bess ? Math.round(contractedMd * 125) : 0; // Avoided MD demand penalty in ₹
 
   // Diesel fuel displaced (0.26 L / kWh avoided)
   const dieselFuelDisplacedLiters = Math.round(totalSolarKwh * 0.26);
-  const dieselCostSaved = Math.round(dieselFuelDisplacedLiters * 1.6); // $1.60 / Liter
+  const dieselCostSaved = Math.round(dieselFuelDisplacedLiters * 92); // ₹92 / Liter benchmark
 
   // Carbon offset: 0.49 kg CO2 per clean kWh generated
   const co2AbatedKg = Math.round(totalSolarKwh * 0.49);

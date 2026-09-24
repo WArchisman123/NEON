@@ -75,9 +75,9 @@ export function SubscriptionView({
 
   const getTierForSite = (site: SiteRecord) => {
     const cap = (site.solar_capacity_kwp || 0) + (site.bess_power_kw || 0);
-    if (cap <= 500) return { name: "Starter", rate: "$199 / mo" };
-    if (cap <= 2500) return { name: "Pro Commercial", rate: "$599 / mo" };
-    return { name: "Utility Enterprise", rate: "$1,499 / mo" };
+    if (cap <= 500) return { name: "Starter", rate: "₹16,500 / mo" };
+    if (cap <= 2500) return { name: "Pro Commercial", rate: "₹49,500 / mo" };
+    return { name: "Utility Enterprise", rate: "₹1,24,000 / mo" };
   };
 
   return (
@@ -367,7 +367,7 @@ export function SubscriptionView({
               </span>
               <h4 className="text-lg font-black text-white">Starter Tier</h4>
               <div className="text-2xl font-black text-white font-mono">
-                $199 <span className="text-xs text-slate-400 font-normal">/ month</span>
+                ₹16,500 <span className="text-xs text-slate-400 font-normal">/ month</span>
               </div>
               <p className="text-xs text-slate-400">
                 Ideal for rooftop arrays and behind-the-meter batteries up to 500 kWp / 500 kWh.
@@ -400,7 +400,7 @@ export function SubscriptionView({
               </div>
               <h4 className="text-lg font-black text-white">Pro Commercial</h4>
               <div className="text-2xl font-black text-white font-mono">
-                $599 <span className="text-xs text-slate-400 font-normal">/ month</span>
+                ₹49,500 <span className="text-xs text-slate-400 font-normal">/ month</span>
               </div>
               <p className="text-xs text-slate-400">
                 Engineered for multi-MW microgrids and utility-feeder storage up to 2.5 MWp / 5 MWh.
@@ -430,7 +430,7 @@ export function SubscriptionView({
               </span>
               <h4 className="text-lg font-black text-white">Utility Enterprise</h4>
               <div className="text-2xl font-black text-white font-mono">
-                $1,499 <span className="text-xs text-slate-400 font-normal">/ month</span>
+                ₹1,24,000 <span className="text-xs text-slate-400 font-normal">/ month</span>
               </div>
               <p className="text-xs text-slate-400">
                 Designed for large-scale utility solar farms and gigawatt-hour battery systems with custom SLA.

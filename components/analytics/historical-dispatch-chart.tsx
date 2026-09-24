@@ -6,7 +6,7 @@ import {
   Sun,
   Zap,
   Calendar,
-  DollarSign,
+  IndianRupee,
   Leaf,
 } from "lucide-react";
 
@@ -168,11 +168,11 @@ export function HistoricalDispatchChart({
 
         <div className="p-3 rounded-lg bg-[#121622]/70 border border-white/[0.04]">
           <div className="flex items-center gap-1.5 text-[11px] uppercase font-semibold text-slate-400">
-            <DollarSign className="size-3 text-[#00E676]" />
+            <IndianRupee className="size-3 text-[#00E676]" />
             <span>Arbitrage Saved</span>
           </div>
           <div className="text-lg font-bold font-mono text-[#00E676] mt-1">
-            ${totals.costSaved.toLocaleString()}
+            ₹{totals.costSaved.toLocaleString("en-IN")}
           </div>
         </div>
 

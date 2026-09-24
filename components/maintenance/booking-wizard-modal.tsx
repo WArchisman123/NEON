@@ -86,9 +86,9 @@ export function BookingWizardModal({
   }, [services, selectedServiceId, assetType, eligibleServices]);
 
   // Quote calculations
-  const basePrice = currentService ? currentService.base_price : 1250;
-  const environmentalFee = 120;
-  const urgentFee = isUrgentSla ? 350 : 0;
+  const basePrice = currentService ? currentService.base_price : 85000;
+  const environmentalFee = 8500;
+  const urgentFee = isUrgentSla ? 28000 : 0;
   const totalPrice = basePrice + environmentalFee + urgentFee;
 
   if (!isOpen) return null;
@@ -424,7 +424,7 @@ export function BookingWizardModal({
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-xs text-white">Urgent 24-hr SLA</span>
-                    <span className="text-[10px] font-bold text-[#FF2A85]">+$350 Fee</span>
+                    <span className="text-[10px] font-bold text-[#FF2A85]">+₹28,000 Fee</span>
                   </div>
                   <p className="text-[11px] text-slate-400 mt-1">
                     Emergency certified field technician dispatched within 24 hours.
@@ -456,24 +456,24 @@ export function BookingWizardModal({
 
               <div className="flex items-center justify-between text-slate-300">
                 <span>{currentService?.title || "Specialized Service Package"}:</span>
-                <span className="font-bold text-white">${basePrice.toLocaleString()}</span>
+                <span className="font-bold text-white">₹{basePrice.toLocaleString("en-IN")}</span>
               </div>
 
               <div className="flex items-center justify-between text-slate-300">
                 <span>Calibrated Test Equipment &amp; Environmental Fee:</span>
-                <span className="font-bold text-white">${environmentalFee}</span>
+                <span className="font-bold text-white">₹{environmentalFee.toLocaleString("en-IN")}</span>
               </div>
 
               {isUrgentSla && (
                 <div className="flex items-center justify-between text-[#FF2A85]">
                   <span>Urgent 24-Hour Emergency Dispatch SLA:</span>
-                  <span className="font-bold">+$350</span>
+                  <span className="font-bold">+₹{urgentFee.toLocaleString("en-IN")}</span>
                 </div>
               )}
 
               <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between text-sm font-bold">
                 <span className="text-white">Total Authorized Amount:</span>
-                <span className="text-lg font-black text-[#00E676]">${totalPrice.toLocaleString()} USD</span>
+                <span className="text-lg font-black text-[#00E676]">₹{totalPrice.toLocaleString("en-IN")}</span>
               </div>
             </div>
 
@@ -576,7 +576,7 @@ export function BookingWizardModal({
                 ) : (
                   <Check className="size-4" />
                 )}
-                <span>Confirm &amp; Authorize ${totalPrice.toLocaleString()}</span>
+                <span>Confirm &amp; Authorize ₹{totalPrice.toLocaleString("en-IN")}</span>
               </button>
             )}
           </div>

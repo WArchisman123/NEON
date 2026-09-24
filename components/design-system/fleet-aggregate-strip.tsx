@@ -62,7 +62,7 @@ export function FleetAggregateStrip({ aggregates }: { aggregates?: FleetAggregat
       iconColor: "text-[#9D4EDD]",
       glowColor: "group-hover:border-[#9D4EDD]/40",
       topStrip: "via-[#9D4EDD]",
-      delta: "+$84.20/hr",
+      delta: "+₹6,950/hr",
       deltaLabel: "arbitrage velocity",
       deltaColor: "text-[#00E676]",
     },

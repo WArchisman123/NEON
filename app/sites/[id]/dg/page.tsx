@@ -255,7 +255,7 @@ export default async function DgSubsystemPage({ params }: Props) {
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Diesel Fuel Avoided by Solar/BESS</span>
-                  <span className="text-[#00E676] font-bold">428 Liters ($684 Saved today)</span>
+                  <span className="text-[#00E676] font-bold">428 Liters (₹56,400 Saved today)</span>
                 </div>
               </div>
 

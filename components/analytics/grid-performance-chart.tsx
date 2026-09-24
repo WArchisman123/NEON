@@ -169,12 +169,12 @@ export function GridPerformanceChart({
           </div>
           <div className="flex items-center gap-2">
             <span className="size-3 rounded-sm bg-[#FF2A85]/20 border border-[#FF2A85]" />
-            <span className="text-[#FF2A85] font-medium">Peak Window ($0.18/kWh)</span>
+            <span className="text-[#FF2A85] font-medium">Peak Window (₹{peakTariffRate}/kWh)</span>
           </div>
         </div>
 
         <div className="text-[11px] text-slate-400">
-          Tariff: Off-Peak <span className="text-white font-bold">${offpeakTariffRate}/kWh</span> • Peak <span className="text-[#FF2A85] font-bold">${peakTariffRate}/kWh</span>
+          Tariff: Off-Peak <span className="text-white font-bold">₹{offpeakTariffRate}/kWh</span> • Peak <span className="text-[#FF2A85] font-bold">₹{peakTariffRate}/kWh</span>
         </div>
       </div>
 
@@ -301,7 +301,7 @@ export function GridPerformanceChart({
           <div>
             <span className="text-slate-400 text-[10px] uppercase">Tariff Slot</span>
             <div className={`font-bold mt-0.5 ${hoveredPoint.isPeak ? "text-[#FF2A85]" : "text-slate-300"}`}>
-              {hoveredPoint.isPeak ? "PEAK ($0.18/kWh)" : "OFF-PEAK ($0.07/kWh)"}
+              {hoveredPoint.isPeak ? `PEAK (₹${peakTariffRate}/kWh)` : `OFF-PEAK (₹${offpeakTariffRate}/kWh)`}
             </div>
           </div>
         </div>

@@ -225,7 +225,7 @@ export function MaintenanceHubView({
                       {isBess ? "BESS Specialized" : "Solar PV Specialized"}
                     </span>
                     <span className="text-base sm:text-lg font-black font-mono text-white">
-                      ${srv.base_price.toLocaleString()}
+                      ₹{srv.base_price.toLocaleString("en-IN")}
                     </span>
                   </div>
 
@@ -352,7 +352,7 @@ export function MaintenanceHubView({
                   <div className="flex items-center justify-between lg:justify-end gap-4 shrink-0">
                     <div className="text-right">
                       <div className="text-base font-black text-white">
-                        ${tck.total_price.toLocaleString()}
+                        ₹{tck.total_price.toLocaleString("en-IN")}
                       </div>
                       <div className="text-[10px] uppercase font-bold text-[#00E676]">
                         {tck.payment_status}

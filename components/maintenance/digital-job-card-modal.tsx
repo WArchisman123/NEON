@@ -361,7 +361,7 @@ export function DigitalJobCardModal({
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-white/[0.08]">
             <div className="flex items-center gap-2 text-xs font-mono">
               <span className="text-slate-400">Commercial Total:</span>
-              <span className="text-white font-bold">${currentTicket.total_price.toLocaleString()}</span>
+              <span className="text-white font-bold">₹{currentTicket.total_price.toLocaleString("en-IN")}</span>
               <span className="text-[10px] px-2 py-0.5 rounded bg-[#00E676]/15 text-[#00E676] font-bold uppercase">
                 {currentTicket.payment_status}
               </span>

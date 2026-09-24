@@ -11,7 +11,7 @@ import {
   Zap,
   Building2,
   MapPin,
-  DollarSign,
+  IndianRupee,
   Loader2,
   CheckCircle2,
   AlertCircle,
@@ -70,8 +70,8 @@ const PRESET_TEMPLATES: TemplateConfig[] = [
     dgKva: 0,
     hasGrid: true,
     demandKva: 750,
-    peakTariff: 0.19,
-    offpeakTariff: 0.08,
+    peakTariff: 8.50,
+    offpeakTariff: 4.50,
   },
   {
     label: "Full Hybrid Microgrid",
@@ -91,8 +91,8 @@ const PRESET_TEMPLATES: TemplateConfig[] = [
     dgKva: 600,
     hasGrid: true,
     demandKva: 1000,
-    peakTariff: 0.22,
-    offpeakTariff: 0.09,
+    peakTariff: 9.80,
+    offpeakTariff: 5.20,
   },
   {
     label: "Commercial Rooftop",
@@ -112,8 +112,8 @@ const PRESET_TEMPLATES: TemplateConfig[] = [
     dgKva: 0,
     hasGrid: true,
     demandKva: 600,
-    peakTariff: 0.17,
-    offpeakTariff: 0.07,
+    peakTariff: 7.80,
+    offpeakTariff: 4.20,
   },
   {
     label: "BESS Peaker / Shaving",
@@ -133,8 +133,8 @@ const PRESET_TEMPLATES: TemplateConfig[] = [
     dgKva: 0,
     hasGrid: true,
     demandKva: 1200,
-    peakTariff: 0.24,
-    offpeakTariff: 0.08,
+    peakTariff: 10.50,
+    offpeakTariff: 5.00,
   },
 ];
 
@@ -164,8 +164,8 @@ export function AddSiteModal({ isOpen, onClose, onSuccess }: AddSiteModalProps) 
   const [demandKva, setDemandKva] = useState<string>("750");
 
   // TOU Tariffs
-  const [peakTariff, setPeakTariff] = useState<string>("0.19");
-  const [offpeakTariff, setOffpeakTariff] = useState<string>("0.08");
+  const [peakTariff, setPeakTariff] = useState<string>("8.50");
+  const [offpeakTariff, setOffpeakTariff] = useState<string>("4.50");
 
   // UI state
   const [submitting, setSubmitting] = useState(false);
@@ -240,8 +240,8 @@ export function AddSiteModal({ isOpen, onClose, onSuccess }: AddSiteModalProps) 
         dgCapacityKva: hasDg ? parseFloat(dgKva) || 0 : 0,
         hasGrid,
         contractedDemandKva: hasGrid ? parseFloat(demandKva) || 0 : 0,
-        peakTariffRate: parseFloat(peakTariff) || 0.18,
-        offpeakTariffRate: parseFloat(offpeakTariff) || 0.07,
+        peakTariffRate: parseFloat(peakTariff) || 8.50,
+        offpeakTariffRate: parseFloat(offpeakTariff) || 4.50,
       };
 
       const res = await createSite(payload);
@@ -745,41 +745,41 @@ export function AddSiteModal({ isOpen, onClose, onSuccess }: AddSiteModalProps) 
               <div className="p-4 rounded-xl bg-[#0B0D13] border border-white/[0.08] space-y-3">
                 <div className="flex items-center justify-between border-b border-white/[0.06] pb-2">
                   <div className="flex items-center gap-2 text-white font-bold uppercase tracking-wider text-xs">
-                    <DollarSign className="size-3.5 text-[#FF2A85]" />
+                    <IndianRupee className="size-3.5 text-[#FF2A85]" />
                     <span>3. Time-of-Use (TOU) Tariff Schedule</span>
                   </div>
                   <div className="px-2 py-0.5 rounded bg-[#FF2A85]/20 text-[#FF2A85] border border-[#FF2A85]/40 font-mono text-[10px]">
-                    Spread: ${tariffSpread}/kWh
+                    Spread: ₹{tariffSpread}/kWh
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                      Peak Tariff Rate ($/kWh)
+                      Peak Tariff Rate (₹/kWh)
                     </label>
                     <input
                       type="number"
-                      step="0.001"
+                      step="0.01"
                       min="0"
                       value={peakTariff}
                       onChange={(e) => setPeakTariff(e.target.value)}
-                      placeholder="0.19"
+                      placeholder="8.50"
                       className="w-full px-3 py-2 rounded-lg bg-[#121622] border border-white/[0.1] text-white font-mono text-xs focus:outline-none focus:border-[#FF2A85] min-h-[44px]"
                     />
                   </div>
 
                   <div className="space-y-1">
                     <label className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                      Off-Peak Tariff Rate ($/kWh)
+                      Off-Peak Tariff Rate (₹/kWh)
                     </label>
                     <input
                       type="number"
-                      step="0.001"
+                      step="0.01"
                       min="0"
                       value={offpeakTariff}
                       onChange={(e) => setOffpeakTariff(e.target.value)}
-                      placeholder="0.08"
+                      placeholder="4.50"
                       className="w-full px-3 py-2 rounded-lg bg-[#121622] border border-white/[0.1] text-white font-mono text-xs focus:outline-none focus:border-[#FF2A85] min-h-[44px]"
                     />
                   </div>
