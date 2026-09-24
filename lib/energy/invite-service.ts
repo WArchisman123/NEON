@@ -3,7 +3,8 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { query } from "@/lib/supabase/db";
 import { OrganizationRecord } from "./types";
 
-const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
+export const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
+
 
 function getSecretKey(): string {
   const secret = process.env.CLERK_SECRET_KEY || "neon-energy-invite-fallback-secret-2026";

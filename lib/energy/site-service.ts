@@ -537,3 +537,244 @@ export async function getUsersForOrg(clerkOrgId: string): Promise<UserRecord[]> 
   return res.rows;
 }
 
+export interface CreateSiteInput {
+  name: string;
+  location_city: string;
+  location_state: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  plant_type?: "commercial_industrial" | "utility_microgrid" | "rooftop_hybrid";
+  solar_capacity_kwp?: number;
+  bess_capacity_kwh?: number;
+  bess_power_kw?: number;
+  dg_capacity_kva?: number;
+  contracted_demand_kva?: number;
+  has_solar?: boolean;
+  has_bess?: boolean;
+  has_dg?: boolean;
+  has_grid?: boolean;
+  peak_tariff_rate?: number;
+  offpeak_tariff_rate?: number;
+}
+
+/**
+ * Registers a new Solar and BESS site for the specified organization.
+ * Automatically provisions hardware devices, initial telemetry snapshot,
+ * and 24 hours of baseline time-series rollups.
+ */
+export async function createSiteForOrg(
+  clerkOrgId: string,
+  input: CreateSiteInput
+): Promise<SiteRecord> {
+  // 1. Resolve or create the organization
+  const org = await getOrCreateOrg(clerkOrgId);
+  const orgId = org.id;
+
+  // 2. Generate unique slug
+  let slug = input.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  if (!slug) {
+    slug = `site-${Date.now()}`;
+  }
+
+  const existingSlug = await query<{ id: string }>(
+    "SELECT id FROM public.sites WHERE org_id = $1 AND slug = $2 LIMIT 1",
+    [orgId, slug]
+  );
+  if (existingSlug.rows.length > 0) {
+    slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+  }
+
+  // 3. Normalize values
+  const plantType = input.plant_type || "commercial_industrial";
+  const hasSolar = Boolean(input.has_solar);
+  const hasBess = Boolean(input.has_bess);
+  const hasDg = Boolean(input.has_dg);
+  const hasGrid = input.has_grid !== undefined ? Boolean(input.has_grid) : true;
+
+  const solarKwp = hasSolar ? Number(input.solar_capacity_kwp) || 0 : 0;
+  const bessKwh = hasBess ? Number(input.bess_capacity_kwh) || 0 : 0;
+  const bessPowerKw = hasBess ? Number(input.bess_power_kw) || 0 : 0;
+  const dgKva = hasDg ? Number(input.dg_capacity_kva) || 0 : 0;
+  const contractedDemandKva = hasGrid ? Number(input.contracted_demand_kva) || 0 : 0;
+
+  const peakTariff = Number(input.peak_tariff_rate) || 0.18;
+  const offpeakTariff = Number(input.offpeak_tariff_rate) || 0.07;
+  const lat = input.latitude !== undefined && input.latitude !== null ? Number(input.latitude) : null;
+  const lng = input.longitude !== undefined && input.longitude !== null ? Number(input.longitude) : null;
+
+  // 4. Insert into public.sites
+  const siteRes = await query<{ id: string }>(
+    `INSERT INTO public.sites (
+      org_id, name, slug, location_city, location_state, latitude, longitude,
+      plant_type, status, subscription_status,
+      solar_capacity_kwp, bess_capacity_kwh, bess_power_kw, dg_capacity_kva, contracted_demand_kva,
+      has_solar, has_bess, has_dg, has_grid, peak_tariff_rate, offpeak_tariff_rate
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'online', 'active', $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+    RETURNING id`,
+    [
+      orgId,
+      input.name.trim(),
+      slug,
+      input.location_city.trim(),
+      input.location_state.trim(),
+      lat,
+      lng,
+      plantType,
+      solarKwp,
+      bessKwh,
+      bessPowerKw,
+      dgKva,
+      contractedDemandKva,
+      hasSolar,
+      hasBess,
+      hasDg,
+      hasGrid,
+      peakTariff,
+      offpeakTariff,
+    ]
+  );
+
+  const newSiteId = siteRes.rows[0].id;
+
+  // 5. Provision default hardware devices
+  const devicesToInsert: Array<{ name: string; category: string; manufacturer: string; model: string }> = [];
+
+  if (hasSolar) {
+    devicesToInsert.push({
+      name: `${input.name} Main Inverter Bank`,
+      category: "solar_inverter",
+      manufacturer: "SMA Solar",
+      model: "Sunny Highpower PEAK3 150kW",
+    });
+    if (solarKwp > 500) {
+      devicesToInsert.push({
+        name: `${input.name} Auxiliary Inverter Bank`,
+        category: "solar_inverter",
+        manufacturer: "Sungrow",
+        model: "SG250HX 250kW",
+      });
+    }
+  }
+
+  if (hasBess) {
+    devicesToInsert.push({
+      name: `${input.name} LFP Battery Storage BMS`,
+      category: "bess_bms",
+      manufacturer: "Tesla Energy",
+      model: "Megapack BMS Gen2",
+    });
+    devicesToInsert.push({
+      name: `${input.name} Bi-directional PCS Inverter`,
+      category: "bess_pcs",
+      manufacturer: "Dynapower",
+      model: "CPS-500 Inverter",
+    });
+  }
+
+  if (hasDg) {
+    devicesToInsert.push({
+      name: `${input.name} Standby Genset Controller`,
+      category: "diesel_generator",
+      manufacturer: "Cummins Power",
+      model: "QSK23-G7 Genset Controller",
+    });
+  }
+
+  if (hasGrid) {
+    devicesToInsert.push({
+      name: `${input.name} Utility Substation Meter`,
+      category: "grid_meter",
+      manufacturer: "Schneider Electric",
+      model: "PowerLogic ION9000",
+    });
+  }
+
+  // Load Substation device
+  devicesToInsert.push({
+    name: `${input.name} Facility Incomer Feeder`,
+    category: "load_substation",
+    manufacturer: "Siemens",
+    model: "PAC4200 Smart Meter",
+  });
+
+  for (const dev of devicesToInsert) {
+    await query(
+      `INSERT INTO public.site_devices (site_id, name, category, manufacturer, model, is_online)
+       VALUES ($1, $2, $3, $4, $5, true)`,
+      [newSiteId, dev.name, dev.category, dev.manufacturer, dev.model]
+    );
+  }
+
+  // 6. Compute initial snapshot values
+  const initialSolarKw = hasSolar ? Math.round(solarKwp * 0.78) : 0;
+  const initialLoadKw = Math.max(50, Math.round((solarKwp || bessPowerKw || 500) * 0.62));
+  const initialBessKw = hasBess
+    ? initialSolarKw > initialLoadKw
+      ? -Math.round(Math.min(bessPowerKw || 200, (initialSolarKw - initialLoadKw) * 0.8)) // charging
+      : Math.round(Math.min(bessPowerKw || 200, (initialLoadKw - initialSolarKw) * 0.5)) // discharging
+    : 0;
+  const initialGridKw = hasGrid
+    ? initialLoadKw - initialSolarKw - (initialBessKw > 0 ? initialBessKw : 0) + (initialBessKw < 0 ? Math.abs(initialBessKw) : 0)
+    : 0;
+
+  const initialSoc = hasBess ? 82.5 : 0;
+  const initialSoh = hasBess ? 99.2 : 0;
+  const initialFuel = hasDg ? 90.0 : 0;
+
+  const dailyYield = hasSolar ? Math.round(solarKwp * 4.3) : 0;
+  const dailyLoad = Math.round(initialLoadKw * 6.5);
+  const dailyCo2 = Math.round(dailyYield * 0.72);
+
+  await query(
+    `INSERT INTO public.telemetry_snapshots (
+      site_id, solar_power_kw, bess_power_kw, grid_power_kw, dg_power_kw, load_power_kw,
+      bess_soc_pct, bess_soh_pct, dg_fuel_pct, dg_running, grid_frequency_hz, grid_power_factor,
+      solar_yield_today_kwh, load_consumption_today_kwh, grid_import_today_kwh, grid_export_today_kwh, co2_saved_today_kg,
+      dg_yield_today_kwh, bess_charge_today_kwh, bess_discharge_today_kwh
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)`,
+    [
+      newSiteId,
+      initialSolarKw,
+      initialBessKw,
+      initialGridKw,
+      0, // dg_power_kw
+      initialLoadKw,
+      initialSoc,
+      initialSoh,
+      initialFuel,
+      false,
+      60.0,
+      0.99,
+      dailyYield,
+      dailyLoad,
+      hasGrid && initialGridKw > 0 ? 120 : 0,
+      hasGrid && initialGridKw < 0 ? Math.abs(initialGridKw * 4) : 0,
+      dailyCo2,
+      0,
+      hasBess ? Math.round(bessKwh * 0.45) : 0,
+      hasBess ? Math.round(bessKwh * 0.3) : 0,
+    ]
+  );
+
+  // 7. Seed initial 24 hours of hourly telemetry records
+  await generateHourlyTelemetryForSite(
+    newSiteId,
+    solarKwp,
+    bessKwh,
+    initialLoadKw,
+    hasDg
+  );
+
+  // 8. Retrieve complete site record with snapshot data
+  const details = await getSiteDetails(clerkOrgId, newSiteId);
+  if (!details) {
+    throw new Error(`Failed to retrieve newly created site ${newSiteId}`);
+  }
+
+  return details.site;
+}
+

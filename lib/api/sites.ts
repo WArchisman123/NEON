@@ -48,3 +48,37 @@ export async function updateSite(
     updates
   );
 }
+
+export interface CreateSitePayload {
+  name: string;
+  locationCity: string;
+  locationState: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  plantType?: "commercial_industrial" | "utility_microgrid" | "rooftop_hybrid";
+  solarCapacityKwp?: number;
+  bessCapacityKwh?: number;
+  bessPowerKw?: number;
+  dgCapacityKva?: number;
+  contractedDemandKva?: number;
+  hasSolar?: boolean;
+  hasBess?: boolean;
+  hasDg?: boolean;
+  hasGrid?: boolean;
+  peakTariffRate?: number;
+  offpeakTariffRate?: number;
+}
+
+/**
+ * Client API call to register a new solar and BESS site
+ * Appears in DevTools Network tab as POST /api/v1/sites
+ */
+export async function createSite(
+  payload: CreateSitePayload
+): Promise<{ success: boolean; data: SiteRecord; message?: string }> {
+  return api.post<{ success: boolean; data: SiteRecord; message?: string }>(
+    "/api/v1/sites",
+    payload
+  );
+}
+

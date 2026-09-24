@@ -47,7 +47,7 @@ export function InviteTeamDialog({
 
   // Link copy state
   const [copiedLink, setCopiedLink] = useState(false);
-  const [currentLink, setCurrentLink] = useState("");
+  const [dynamicLink, setDynamicLink] = useState("");
 
   // Email invite state
   const [email, setEmail] = useState("");
@@ -60,16 +60,25 @@ export function InviteTeamDialog({
   // Demo credentials copy state
   const [copiedCreds, setCopiedCreds] = useState<"email" | "password" | null>(null);
 
+  // Derive static link if available on the selected organization
+  const matchedOrg = organizations.find((o) => o.id === selectedOrgId);
+  const staticLink =
+    matchedOrg && matchedOrg.links
+      ? selectedRole === "org:admin"
+        ? matchedOrg.links.admin
+        : matchedOrg.links.member
+      : "";
+  const currentLink = staticLink || dynamicLink;
+
   // Fetch manageable organizations on modal open
   useEffect(() => {
     if (!isOpen) return;
 
     let isMounted = true;
-    setLoadingOrgs(true);
-
-    fetch("/api/v1/org/invite")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchInviteData = async () => {
+      try {
+        const res = await fetch("/api/v1/org/invite");
+        const data = await res.json();
         if (!isMounted) return;
         if (data.organizations && data.organizations.length > 0) {
           setOrganizations(data.organizations);
@@ -79,45 +88,44 @@ export function InviteTeamDialog({
               : data.defaultOrgId || data.organizations[0].id;
           setSelectedOrgId(initialOrgId);
         }
-        setLoadingOrgs(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error loading invite data:", err);
+      } finally {
         if (isMounted) setLoadingOrgs(false);
-      });
+      }
+    };
+
+    fetchInviteData();
 
     return () => {
       isMounted = false;
     };
   }, [isOpen, activeOrgId]);
 
-  // Update live link when selectedOrgId or selectedRole changes
+  // Update dynamic link when selectedOrgId or selectedRole changes
   useEffect(() => {
-    if (!selectedOrgId) return;
+    if (!selectedOrgId || matchedOrg?.links) return;
 
-    const matchedOrg = organizations.find((o) => o.id === selectedOrgId);
-    if (matchedOrg && matchedOrg.links) {
-      const link =
-        selectedRole === "org:admin" ? matchedOrg.links.admin : matchedOrg.links.member;
-      setCurrentLink(link);
-    } else {
-      // Fetch dynamic link
-      fetch("/api/v1/org/invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "generate_link",
-          targetOrgId: selectedOrgId,
-          role: selectedRole,
-        }),
+    let isMounted = true;
+    fetch("/api/v1/org/invite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "generate_link",
+        targetOrgId: selectedOrgId,
+        role: selectedRole,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && data.link) setDynamicLink(data.link);
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.link) setCurrentLink(data.link);
-        })
-        .catch(console.error);
-    }
-  }, [selectedOrgId, selectedRole, organizations]);
+      .catch(console.error);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedOrgId, selectedRole, matchedOrg]);
 
   // Close on Escape key press
   useEffect(() => {

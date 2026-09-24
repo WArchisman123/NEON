@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { useSites } from "@/hooks/use-sites";
 import { SiteRecord } from "@/lib/energy/types";
 import {
@@ -18,22 +19,35 @@ import {
   Zap,
   Search,
   X,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   RenewalSubscriptionModal,
   RenewalModalSite,
 } from "@/components/subscription/renewal-subscription-modal";
+import { AddSiteModal } from "@/components/dashboard/add-site-modal";
 
 interface Props {
   initialSites: SiteRecord[];
+  userName?: string;
+  orgName?: string;
+  role?: string;
+  clerkOrgId?: string;
 }
 
-export function FleetCockpitView({ initialSites }: Props) {
+export function FleetCockpitView({
+  initialSites,
+  userName,
+  orgName,
+  role,
+  clerkOrgId,
+}: Props) {
   const [activeFilter, setActiveFilter] = useState<"all" | "solar" | "bess" | "dg" | "islanded">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSiteForRenewal, setSelectedSiteForRenewal] = useState<RenewalModalSite | null>(null);
   const [isRenewalModalOpen, setIsRenewalModalOpen] = useState(false);
+  const [isAddSiteModalOpen, setIsAddSiteModalOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Client API hook that triggers real HTTP requests in Chrome DevTools Network Tab
@@ -181,6 +195,61 @@ export function FleetCockpitView({ initialSites }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Welcome & Session Status Banner */}
+      {userName && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-xl bg-[#0B0D13] border border-white/[0.08] relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FF2A85] to-transparent" />
+
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-[#00E676] animate-pulse" />
+              <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                Authenticated Operator Session
+              </span>
+              <span className="px-2 py-0.5 rounded bg-[#FF2A85]/20 text-[#FF2A85] border border-[#FF2A85]/40 text-[10px] font-mono font-bold uppercase">
+                {(role || "org:member").replace("org:", "").toUpperCase()}
+              </span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-1">
+              Welcome back,{" "}
+              <span className="text-[#FF2A85]">{userName}</span>
+            </h1>
+            <p className="text-xs text-slate-400 mt-0.5 font-medium flex items-center gap-2">
+              <span className="text-white font-semibold">{orgName || "iRasus Technologies"}</span>
+              <span className="text-slate-600">•</span>
+              <span>Fleet Dispatch &amp; Substation Telemetry Dashboard</span>
+              {clerkOrgId && (
+                <>
+                  <span className="text-slate-600">•</span>
+                  <span className="text-slate-500 font-mono text-[10px]">ID: {clerkOrgId}</span>
+                </>
+              )}
+            </p>
+          </div>
+
+          {/* <div className="flex items-center gap-2">
+            <Link href="/design-system">
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-mono text-xs border-white/[0.1] bg-[#121622] hover:bg-[#1a2030] text-slate-300 min-h-[38px]"
+              >
+                Design System
+              </Button>
+            </Link>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsAddSiteModalOpen(true)}
+              className="font-mono text-xs gap-1.5 shadow-[0_0_15px_rgba(255,42,133,0.35)] min-h-[38px]"
+            >
+              <Plus className="size-3.5" />
+              <span>Add Solar / BESS Site</span>
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* 5-Metric Glowing Fleet Aggregate Strip */}
       <div className="space-y-2">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -309,6 +378,18 @@ export function FleetCockpitView({ initialSites }: Props) {
             >
               <Zap className="size-3 text-[#9D4EDD]" /> Islanded
             </button>
+
+            {/* Add Site CTA in Controls Bar */}
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={() => setIsAddSiteModalOpen(true)}
+              className="px-2.5 py-1.5 h-auto rounded-lg font-mono text-[11px] flex items-center gap-1 shadow-[0_0_12px_rgba(255,42,133,0.3)] shrink-0 ml-auto sm:ml-2"
+            >
+              <Plus className="size-3" />
+              <span>Add Installation</span>
+            </Button>
           </div>
         </div>
 
@@ -364,17 +445,28 @@ export function FleetCockpitView({ initialSites }: Props) {
                 No site matched &quot;{searchQuery}&quot; with current filter settings. Try clearing the search query or selecting &quot;All&quot;.
               </p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSearchQuery("");
-                setActiveFilter("all");
-              }}
-              className="text-xs font-mono border-white/[0.1] bg-[#121622] text-slate-200 mt-2"
-            >
-              Reset Search & Filters
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveFilter("all");
+                }}
+                className="text-xs font-mono border-white/[0.1] bg-[#121622] text-slate-200"
+              >
+                Reset Search & Filters
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setIsAddSiteModalOpen(true)}
+                className="text-xs font-mono gap-1.5 shadow-[0_0_12px_rgba(255,42,133,0.3)]"
+              >
+                <Plus className="size-3.5" />
+                <span>Add Installation</span>
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -385,6 +477,15 @@ export function FleetCockpitView({ initialSites }: Props) {
         isOpen={isRenewalModalOpen}
         onClose={() => setIsRenewalModalOpen(false)}
         onRenewSuccess={handleRenewSuccess}
+      />
+
+      {/* Add Site Modal */}
+      <AddSiteModal
+        isOpen={isAddSiteModalOpen}
+        onClose={() => setIsAddSiteModalOpen(false)}
+        onSuccess={() => {
+          refresh();
+        }}
       />
     </div>
   );

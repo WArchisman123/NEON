@@ -2,15 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { UserButton, OrganizationSwitcher, useAuth, useOrganization } from "@clerk/nextjs";
-import { Bell, Search, UserPlus } from "lucide-react";
+import { Bell, UserPlus } from "lucide-react";
 import { InviteTeamDialog } from "@/components/layout/invite-team-dialog";
 
 const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
 
 export function Topbar() {
-  const router = useRouter();
   const { orgId } = useAuth();
   const { organization } = useOrganization();
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
