@@ -6,9 +6,14 @@ declare global {
   var _neonPgPoolConnString: string | undefined;
 }
 
-const connectionString =
-  process.env.DATABASE_URL ||
-  "postgresql://postgres.mzumlzmfjgzvycebqask:VncVw2WsMG3RL70u@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres";
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "[db] DATABASE_URL environment variable is not set. " +
+    "Add it to your .env.local (local) or Vercel Environment Variables (production)."
+  );
+}
+
+const connectionString = process.env.DATABASE_URL;
 
 function getPool(): Pool {
   if (
@@ -23,17 +28,26 @@ function getPool(): Pool {
     global._neonPgPool.end().catch(() => {});
   }
 
+  // In serverless (Vercel), each function instance is isolated.
+  // Use max:1 to avoid connection exhaustion across concurrent invocations.
   const newPool = new Pool({
     connectionString,
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
+    max: process.env.NODE_ENV === "production" ? 1 : 10,
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 5000,
     ssl: { rejectUnauthorized: false },
   });
 
+  newPool.on("error", (err) => {
+    console.error("[db] Unexpected pool client error:", err.message);
+  });
+
+  // Always cache the pool globally (dev AND prod) so it survives
+  // within the same serverless function instance lifetime
+  global._neonPgPool = newPool;
+  global._neonPgPoolConnString = connectionString;
+
   if (process.env.NODE_ENV !== "production") {
-    global._neonPgPool = newPool;
-    global._neonPgPoolConnString = connectionString;
     const sanitized = connectionString.replace(/:[^:@]+@/, ":****@");
     console.log(`[db] PostgreSQL pool initialized targeting: ${sanitized}`);
   }
