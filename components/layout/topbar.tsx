@@ -4,7 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserButton, OrganizationSwitcher, useAuth, useOrganization } from "@clerk/nextjs";
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, UserPlus } from "lucide-react";
+import { InviteTeamDialog } from "@/components/layout/invite-team-dialog";
 
 const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
 
@@ -12,6 +13,7 @@ export function Topbar() {
   const router = useRouter();
   const { orgId } = useAuth();
   const { organization } = useOrganization();
+  const [isInviteOpen, setIsInviteOpen] = React.useState(false);
 
   // Organization switcher is shown ONLY for the master admin org (iRasus Technologies).
   // For all other tenant users, it is completely hidden and replaced with a static badge.
@@ -81,6 +83,17 @@ export function Topbar() {
           </kbd>
         </button> */}
 
+        {/* Invite Team Action Button */}
+        <button
+          type="button"
+          onClick={() => setIsInviteOpen(true)}
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#FF2A85]/15 hover:bg-[#FF2A85]/25 border border-[#FF2A85]/40 hover:border-[#FF2A85] text-xs font-mono font-bold text-white shadow-[0_0_12px_rgba(255,42,133,0.3)] transition-all cursor-pointer select-none min-h-[36px]"
+          title="Invite Team & Generate Org Link"
+        >
+          <UserPlus className="size-3.5 text-[#FF2A85]" />
+          <span className="hidden sm:inline">Invite Team</span>
+        </button>
+
         {/* Alarm Alert Bell with Glowing Badge */}
         <button
           type="button"
@@ -112,6 +125,13 @@ export function Topbar() {
           </Link>
         </div>
       </div>
+
+      {/* Org-Scoped Invite Modal Dialog */}
+      <InviteTeamDialog
+        isOpen={isInviteOpen}
+        onClose={() => setIsInviteOpen(false)}
+        activeOrgId={orgId}
+      />
     </header>
   );
 }
