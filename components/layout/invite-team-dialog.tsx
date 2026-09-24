@@ -119,6 +119,16 @@ export function InviteTeamDialog({
     }
   }, [selectedOrgId, selectedRole, organizations]);
 
+  // Close on Escape key press
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const selectedOrg = organizations.find((o) => o.id === selectedOrgId);
@@ -175,13 +185,18 @@ export function InviteTeamDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-xl rounded-2xl bg-[#0B0D13] border border-white/[0.1] shadow-[0_0_60px_rgba(0,0,0,0.9)] overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-4 sm:p-6 md:p-8 flex items-center justify-center min-h-screen animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="relative w-full max-w-xl my-auto rounded-2xl bg-[#0B0D13] border border-white/[0.1] shadow-[0_0_60px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[calc(100vh-3rem)] sm:max-h-[85vh]">
         {/* Top glowing accent */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FF2A85] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FF2A85] to-transparent z-10" />
 
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/[0.08]">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/[0.08] shrink-0 bg-[#0B0D13]">
           <div className="flex items-center gap-2.5">
             <div className="size-8 rounded-lg bg-[#FF2A85]/20 border border-[#FF2A85]/40 flex items-center justify-center text-[#FF2A85]">
               <UserPlus className="size-4" />
@@ -197,14 +212,15 @@ export function InviteTeamDialog({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors cursor-pointer"
+            aria-label="Close invite modal"
           >
             <X className="size-4" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 sm:p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+        <div className="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1">
           {/* Organization & Role Selectors */}
           <div className="p-3.5 rounded-xl bg-[#121622] border border-white/[0.08] space-y-3.5">
             {/* Organization Dropdown */}
