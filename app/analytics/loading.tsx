@@ -24,6 +24,7 @@ export default function AnalyticsLoading() {
             {["Today", "7d", "30d", "YTD"].map((label) => (
               <Skeleton key={label} className="h-7 w-14 rounded-md" />
             ))}
+            <Skeleton className="h-7 w-28 rounded-md" />
           </div>
         </div>
 

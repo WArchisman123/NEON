@@ -9,6 +9,11 @@ import {
   IndianRupee,
   Leaf,
 } from "lucide-react";
+import {
+  CyberDatetimePicker,
+  DateTimeRange,
+  getDefaultDateTimeRange,
+} from "./cyber-datetime-picker";
 
 interface Props {
   initialData: HourlyTelemetryRecord[];
@@ -24,7 +29,8 @@ export function HistoricalDispatchChart({
   hasBess,
   hasDg,
 }: Props) {
-  const [range, setRange] = useState<"today" | "7d" | "30d">("today");
+  const [range, setRange] = useState<"today" | "7d" | "30d" | "custom">("today");
+  const [customRange, setCustomRange] = useState<DateTimeRange>(() => getDefaultDateTimeRange(7));
 
   // Filter data based on selected range
   const filteredData = React.useMemo(() => {
@@ -34,12 +40,35 @@ export function HistoricalDispatchChart({
       // Sample every 3 hours for clean 7-day display
       const last7Days = initialData.slice(-168);
       return last7Days.filter((_, idx) => idx % 3 === 0);
-    } else {
+    } else if (range === "30d") {
       // 30 days: sample daily aggregates
       const last30Days = initialData.slice(-720);
       return last30Days.filter((_, idx) => idx % 12 === 0);
+    } else {
+      // Custom range
+      if (!customRange.startDate || !customRange.endDate) {
+        return initialData.slice(-168);
+      }
+      const startMs = new Date(
+        `${customRange.startDate}T${customRange.startTime || "00:00"}`
+      ).getTime();
+      const endMs = new Date(
+        `${customRange.endDate}T${customRange.endTime || "23:59"}`
+      ).getTime();
+
+      const matched = initialData.filter((item) => {
+        const itemMs = new Date(item.bucket_timestamp).getTime();
+        return itemMs >= startMs && itemMs <= endMs;
+      });
+
+      const res = matched.length > 0 ? matched : initialData.slice(-24);
+      if (res.length > 100) {
+        const factor = Math.ceil(res.length / 50);
+        return res.filter((_, idx) => idx % factor === 0);
+      }
+      return res;
     }
-  }, [initialData, range]);
+  }, [initialData, range, customRange]);
 
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
@@ -104,41 +133,60 @@ export function HistoricalDispatchChart({
           </p>
         </div>
 
-        {/* Range Selector Switcher */}
-        <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#121622] border border-white/[0.06] self-start lg:self-auto">
-          <button
-            type="button"
-            onClick={() => setRange("today")}
-            className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-md transition-all ${
-              range === "today"
-                ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.4)]"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            Today (24h)
-          </button>
-          <button
-            type="button"
-            onClick={() => setRange("7d")}
-            className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-md transition-all ${
-              range === "7d"
-                ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.4)]"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            7 Days
-          </button>
-          <button
-            type="button"
-            onClick={() => setRange("30d")}
-            className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-md transition-all ${
-              range === "30d"
-                ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.4)]"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            30 Days
-          </button>
+        {/* Range Selector Switcher & Custom DateTime Picker */}
+        <div className="flex flex-wrap items-center gap-2 self-start lg:self-auto">
+          <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#121622] border border-white/[0.06]">
+            <button
+              type="button"
+              onClick={() => setRange("today")}
+              className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-md transition-all ${
+                range === "today"
+                  ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.4)]"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Today (24h)
+            </button>
+            <button
+              type="button"
+              onClick={() => setRange("7d")}
+              className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-md transition-all ${
+                range === "7d"
+                  ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.4)]"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              7 Days
+            </button>
+            <button
+              type="button"
+              onClick={() => setRange("30d")}
+              className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-md transition-all ${
+                range === "30d"
+                  ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.4)]"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              30 Days
+            </button>
+          </div>
+
+          <CyberDatetimePicker
+            value={customRange}
+            onChange={(r) => {
+              setCustomRange(r);
+              setRange("custom");
+            }}
+            activePreset={range}
+            onPresetChange={(preset) => {
+              if (preset === "custom") {
+                setRange("custom");
+              } else if (preset === "today" || preset === "7d" || preset === "30d") {
+                setRange(preset);
+              }
+            }}
+            accentColor="#FF2A85"
+          />
         </div>
       </div>
 

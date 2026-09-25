@@ -63,6 +63,7 @@ export default function SiteDetailLoading() {
               {["24h", "7d", "30d"].map((r) => (
                 <Skeleton key={r} className="h-7 w-12 rounded-md" />
               ))}
+              <Skeleton className="h-7 w-28 rounded-md" />
             </div>
           </div>
           <Skeleton className="h-48 w-full rounded-xl" />

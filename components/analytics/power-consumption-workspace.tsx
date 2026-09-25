@@ -22,6 +22,11 @@ import {
   AnalyticsSummary,
 } from "@/lib/energy/analytics-engine";
 import { EsgComplianceModal } from "./esg-compliance-modal";
+import {
+  CyberDatetimePicker,
+  DateTimeRange,
+  getDefaultDateTimeRange,
+} from "./cyber-datetime-picker";
 
 interface PowerConsumptionWorkspaceProps {
   site: SiteRecord;
@@ -46,7 +51,8 @@ export function PowerConsumptionWorkspace({
   hourlyTelemetry,
 }: PowerConsumptionWorkspaceProps) {
   const [selectedSiteId, setSelectedSiteId] = useState<string>(site.id);
-  const [timeframe, setTimeframe] = useState<"today" | "7d" | "30d" | "ytd">("today");
+  const [timeframe, setTimeframe] = useState<"today" | "7d" | "30d" | "ytd" | "custom">("today");
+  const [customRange, setCustomRange] = useState<DateTimeRange>(() => getDefaultDateTimeRange(7));
   const [hoveredPoint, setHoveredPoint] = useState<DispatchPoint | null>(null);
   const [isEsgModalOpen, setIsEsgModalOpen] = useState<boolean>(false);
 
@@ -56,27 +62,63 @@ export function PowerConsumptionWorkspace({
     return sites.find((s) => s.id === selectedSiteId) || site;
   }, [sites, selectedSiteId, site]);
 
+  // Filter source telemetry by timeframe or custom range
+  const filteredTelemetry = useMemo(() => {
+    const source = [...hourlyTelemetry];
+    if (timeframe === "today") {
+      return source.slice(-24);
+    } else if (timeframe === "7d") {
+      return source.slice(-168);
+    } else if (timeframe === "30d") {
+      return source.slice(-720);
+    } else if (timeframe === "ytd") {
+      return source.slice(-720);
+    } else {
+      // Custom range filtering
+      if (!customRange.startDate || !customRange.endDate) {
+        return source.slice(-168);
+      }
+      const startMs = new Date(
+        `${customRange.startDate}T${customRange.startTime || "00:00"}`
+      ).getTime();
+      const endMs = new Date(
+        `${customRange.endDate}T${customRange.endTime || "23:59"}`
+      ).getTime();
+
+      const matched = source.filter((item) => {
+        const itemMs = new Date(item.bucket_timestamp).getTime();
+        return itemMs >= startMs && itemMs <= endMs;
+      });
+
+      return matched.length > 0 ? matched : source.slice(-24);
+    }
+  }, [hourlyTelemetry, timeframe, customRange]);
+
   // Downsample/filter telemetry according to timeframe
   const displayData = useMemo(() => {
-    let source = [...hourlyTelemetry];
+    const source = filteredTelemetry;
+    let step = 1;
     if (timeframe === "today") {
-      source = source.slice(-24);
+      step = 1;
     } else if (timeframe === "7d") {
-      source = source.slice(-168);
+      step = 4;
     } else if (timeframe === "30d") {
-      source = source.slice(-720);
+      step = 12;
+    } else if (timeframe === "ytd") {
+      step = 24;
     } else {
-      // YTD: expand with full buffer
-      source = source.slice(-720);
+      if (source.length <= 24) step = 1;
+      else if (source.length <= 168) step = 4;
+      else if (source.length <= 720) step = 12;
+      else step = 24;
     }
 
-    const step =
-      timeframe === "today" ? 1 : timeframe === "7d" ? 4 : timeframe === "30d" ? 12 : 24;
     const sampled: DispatchPoint[] = [];
 
     for (let i = 0; i < source.length; i += step) {
       const item = source[i];
-      const hour = new Date(item.bucket_timestamp).getHours();
+      const dateObj = new Date(item.bucket_timestamp);
+      const hour = dateObj.getHours();
 
       const solarKw = item.avg_solar_kw || 0;
       const bessKw = item.avg_bess_kw || 0;
@@ -91,10 +133,10 @@ export function PowerConsumptionWorkspace({
         timeLabel:
           timeframe === "today"
             ? `${hour.toString().padStart(2, "0")}:00`
-            : new Date(item.bucket_timestamp).toLocaleDateString("en-US", {
+            : dateObj.toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
-                hour: timeframe === "7d" ? "numeric" : undefined,
+                hour: source.length <= 168 ? "numeric" : undefined,
               }),
         solarKw,
         bessDischargeKw,
@@ -106,12 +148,12 @@ export function PowerConsumptionWorkspace({
     }
 
     return sampled;
-  }, [hourlyTelemetry, timeframe]);
+  }, [filteredTelemetry, timeframe]);
 
-  // Compute analytics summary economics
+  // Compute analytics summary economics dynamically for the active interval
   const summary: AnalyticsSummary = useMemo(() => {
-    return calculateAnalyticsSummary(hourlyTelemetry, currentSite);
-  }, [hourlyTelemetry, currentSite]);
+    return calculateAnalyticsSummary(filteredTelemetry, currentSite);
+  }, [filteredTelemetry, currentSite]);
 
   // Max kW scale for SVG
   const maxScaleKw = useMemo(() => {
@@ -126,14 +168,18 @@ export function PowerConsumptionWorkspace({
 
   // CSV Exporter
   const handleDownloadCsv = () => {
-    const csvData = generateDispatchCsv(hourlyTelemetry, currentSite.name);
+    const csvData = generateDispatchCsv(filteredTelemetry, currentSite.name);
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
+    const tfSuffix =
+      timeframe === "custom"
+        ? `${customRange.startDate}_to_${customRange.endDate}`
+        : timeframe;
     link.setAttribute(
       "download",
-      `${currentSite.slug || "site"}-energy-dispatch-${timeframe}.csv`
+      `${currentSite.slug || "site"}-energy-dispatch-${tfSuffix}.csv`
     );
     document.body.appendChild(link);
     link.click();
@@ -184,6 +230,7 @@ export function PowerConsumptionWorkspace({
     "7d": "Last 7 Days (Hourly Profile)",
     "30d": "Last 30 Days (Monthly Yield)",
     ytd: "Year-to-Date (YTD Aggregate)",
+    custom: `Custom Interval: ${customRange.startDate} ${customRange.startTime || "00:00"} → ${customRange.endDate} ${customRange.endTime || "23:59"}`,
   };
 
   return (
@@ -252,6 +299,23 @@ export function PowerConsumptionWorkspace({
               </button>
             ))}
           </div>
+
+          <CyberDatetimePicker
+            value={customRange}
+            onChange={(range) => {
+              setCustomRange(range);
+              setTimeframe("custom");
+            }}
+            activePreset={timeframe}
+            onPresetChange={(preset) => {
+              if (preset === "custom") {
+                setTimeframe("custom");
+              } else {
+                setTimeframe(preset);
+              }
+            }}
+            accentColor="#FF2A85"
+          />
 
           <button
             type="button"

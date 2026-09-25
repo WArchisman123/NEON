@@ -3,6 +3,11 @@
 import React, { useState, useMemo } from "react";
 import { Zap } from "lucide-react";
 import { HourlyTelemetryRecord } from "@/lib/energy/types";
+import {
+  CyberDatetimePicker,
+  DateTimeRange,
+  getDefaultDateTimeRange,
+} from "./cyber-datetime-picker";
 
 interface GridPerformanceChartProps {
   initialData: HourlyTelemetryRecord[];
@@ -24,7 +29,8 @@ export function GridPerformanceChart({
   peakTariffRate,
   offpeakTariffRate,
 }: GridPerformanceChartProps) {
-  const [timeframe, setTimeframe] = useState<"today" | "7d" | "30d">("today");
+  const [timeframe, setTimeframe] = useState<"today" | "7d" | "30d" | "custom">("today");
+  const [customRange, setCustomRange] = useState<DateTimeRange>(() => getDefaultDateTimeRange(7));
   const [hoveredPoint, setHoveredPoint] = useState<GridDataPoint | null>(null);
 
   const displayData = useMemo(() => {
@@ -33,11 +39,40 @@ export function GridPerformanceChart({
       source = source.slice(-24);
     } else if (timeframe === "7d") {
       source = source.slice(-168);
-    } else {
+    } else if (timeframe === "30d") {
       source = source.slice(-720);
+    } else {
+      if (!customRange.startDate || !customRange.endDate) {
+        source = source.slice(-168);
+      } else {
+        const startMs = new Date(
+          `${customRange.startDate}T${customRange.startTime || "00:00"}`
+        ).getTime();
+        const endMs = new Date(
+          `${customRange.endDate}T${customRange.endTime || "23:59"}`
+        ).getTime();
+
+        const matched = source.filter((item) => {
+          const itemMs = new Date(item.bucket_timestamp).getTime();
+          return itemMs >= startMs && itemMs <= endMs;
+        });
+
+        source = matched.length > 0 ? matched : source.slice(-24);
+      }
     }
 
-    const step = timeframe === "today" ? 1 : timeframe === "7d" ? 4 : 12;
+    const step =
+      timeframe === "today"
+        ? 1
+        : timeframe === "7d"
+        ? 4
+        : timeframe === "30d"
+        ? 12
+        : source.length <= 24
+        ? 1
+        : source.length <= 168
+        ? 4
+        : 12;
     const sampled = [];
 
     for (let i = 0; i < source.length; i += step) {
@@ -66,7 +101,7 @@ export function GridPerformanceChart({
     }
 
     return sampled;
-  }, [initialData, timeframe, peakTariffRate, offpeakTariffRate]);
+  }, [initialData, timeframe, peakTariffRate, offpeakTariffRate, customRange]);
 
   const maxKw = useMemo(() => {
     const highest = Math.max(
@@ -118,41 +153,60 @@ export function GridPerformanceChart({
           </p>
         </div>
 
-        {/* Timeframe Selector */}
-        <div className="inline-flex rounded-lg bg-[#121622] p-1 border border-white/[0.06] font-mono text-xs">
-          <button
-            type="button"
-            onClick={() => setTimeframe("today")}
-            className={`px-3 py-1 rounded-md transition-all ${
-              timeframe === "today"
-                ? "bg-[#9D4EDD] text-white font-bold shadow-md"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            Today (15m)
-          </button>
-          <button
-            type="button"
-            onClick={() => setTimeframe("7d")}
-            className={`px-3 py-1 rounded-md transition-all ${
-              timeframe === "7d"
-                ? "bg-[#9D4EDD] text-white font-bold shadow-md"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            7 Days
-          </button>
-          <button
-            type="button"
-            onClick={() => setTimeframe("30d")}
-            className={`px-3 py-1 rounded-md transition-all ${
-              timeframe === "30d"
-                ? "bg-[#9D4EDD] text-white font-bold shadow-md"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            30 Days
-          </button>
+        {/* Timeframe Selector & Custom DateTime Picker */}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex rounded-lg bg-[#121622] p-1 border border-white/[0.06] font-mono text-xs">
+            <button
+              type="button"
+              onClick={() => setTimeframe("today")}
+              className={`px-3 py-1 rounded-md transition-all ${
+                timeframe === "today"
+                  ? "bg-[#9D4EDD] text-white font-bold shadow-md"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              Today (15m)
+            </button>
+            <button
+              type="button"
+              onClick={() => setTimeframe("7d")}
+              className={`px-3 py-1 rounded-md transition-all ${
+                timeframe === "7d"
+                  ? "bg-[#9D4EDD] text-white font-bold shadow-md"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              7 Days
+            </button>
+            <button
+              type="button"
+              onClick={() => setTimeframe("30d")}
+              className={`px-3 py-1 rounded-md transition-all ${
+                timeframe === "30d"
+                  ? "bg-[#9D4EDD] text-white font-bold shadow-md"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              30 Days
+            </button>
+          </div>
+
+          <CyberDatetimePicker
+            value={customRange}
+            onChange={(r) => {
+              setCustomRange(r);
+              setTimeframe("custom");
+            }}
+            activePreset={timeframe}
+            onPresetChange={(preset) => {
+              if (preset === "custom") {
+                setTimeframe("custom");
+              } else if (preset === "today" || preset === "7d" || preset === "30d") {
+                setTimeframe(preset);
+              }
+            }}
+            accentColor="#9D4EDD"
+          />
         </div>
       </div>
 
