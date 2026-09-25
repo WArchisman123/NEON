@@ -5,6 +5,8 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { NeonAppShell } from "@/components/layout/neon-app-shell";
 import { SiteAssetNav } from "@/components/site-detail/site-asset-nav";
 import { SolarPerformanceChart } from "@/components/analytics/solar-performance-chart";
+import { SolarWeatherForecastCard } from "@/components/weather/solar-weather-forecast-card";
+import { MpptStringScatterPlot } from "@/components/solar/mppt-string-scatter-plot";
 import {
   getOrCreateOrg,
   getSiteDetails,
@@ -57,7 +59,7 @@ export default async function SolarSubsystemPage({ params }: Props) {
     const current = isDegraded
       ? nominalStringCurrent * (channelNum === 7 ? 0.68 : 0.76)
       : nominalStringCurrent * (0.97 + ((channelNum * 3) % 7) * 0.01);
-    const voltage = isDegraded ? nominalStringVoltage * 0.94 : nominalStringVoltage;
+    const voltage = channelNum === 19 ? nominalStringVoltage * 0.94 : nominalStringVoltage;
     const powerKw = (voltage * current) / 1000;
     const status = isDegraded
       ? channelNum === 7
@@ -195,6 +197,9 @@ export default async function SolarSubsystemPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Meteorological Forecast & Yield Prediction Engine */}
+        <SolarWeatherForecastCard site={site} />
+
         {/* Primary Analytical Chart: Predicted vs Actual vs Load */}
         <SolarPerformanceChart
           initialData={hourlyTelemetry}
@@ -295,6 +300,9 @@ export default async function SolarSubsystemPage({ params }: Props) {
             })}
           </div>
         </div>
+
+        {/* 24-Channel MPPT String Scatter Plot & Outlier Analyzer */}
+        <MpptStringScatterPlot channels={mpptChannels} />
 
         {/* Inverter Fleet Telemetry & Thermal Matrix */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -25,6 +25,7 @@ import { SchematicNodeFlow } from "@/components/energy-flow/schematic-node-flow"
 import { EnergyFlowVisualizer } from "@/components/energy-flow/energy-flow-visualizer";
 import { PowerConsumptionWorkspace } from "@/components/analytics/power-consumption-workspace";
 import { RenewalSubscriptionModal } from "@/components/subscription/renewal-subscription-modal";
+import { SiteWeatherWidget } from "@/components/weather/site-weather-widget";
 import { Button } from "@/components/ui/button";
 
 interface SiteDetailViewProps {
@@ -367,6 +368,9 @@ export function SiteDetailView({
 
           {/* Schematic Conduit View */}
           <SchematicNodeFlow site={site} />
+
+          {/* Meteorological Intelligence & BESS Automation Directives */}
+          <SiteWeatherWidget site={currentSite} />
 
           {/* Hardware Bundle */}
           <div className="rounded-xl bg-[#0B0D13] border border-white/[0.08] p-4 sm:p-6 space-y-4">

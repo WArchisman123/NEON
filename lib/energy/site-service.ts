@@ -404,6 +404,7 @@ export async function getSitesForOrg(clerkOrgId: string): Promise<SiteRecord[]> 
   const res = await query<SiteRecord>(
     `SELECT 
       s.id, s.org_id, s.name, s.slug, s.location_city, s.location_state,
+      s.latitude, s.longitude,
       s.plant_type, s.status, s.solar_capacity_kwp, s.bess_capacity_kwh,
       s.bess_power_kw, s.dg_capacity_kva, s.contracted_demand_kva,
       s.has_solar, s.has_bess, s.has_dg, s.has_grid,
@@ -435,6 +436,7 @@ export async function getSiteDetails(
   let siteRes = await query<SiteRecord>(
     `SELECT 
       s.id, s.org_id, s.name, s.slug, s.location_city, s.location_state,
+      s.latitude, s.longitude,
       s.plant_type, s.status, s.solar_capacity_kwp, s.bess_capacity_kwh,
       s.bess_power_kw, s.dg_capacity_kva, s.contracted_demand_kva,
       s.has_solar, s.has_bess, s.has_dg, s.has_grid,
@@ -458,6 +460,7 @@ export async function getSiteDetails(
     siteRes = await query<SiteRecord>(
       `SELECT 
         s.id, s.org_id, s.name, s.slug, s.location_city, s.location_state,
+        s.latitude, s.longitude,
         s.plant_type, s.status, s.solar_capacity_kwp, s.bess_capacity_kwh,
         s.bess_power_kw, s.dg_capacity_kva, s.contracted_demand_kva,
         s.has_solar, s.has_bess, s.has_dg, s.has_grid,

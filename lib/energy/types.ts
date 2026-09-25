@@ -18,6 +18,8 @@ export interface SiteRecord {
   has_grid: boolean;
   peak_tariff_rate: number;
   offpeak_tariff_rate: number;
+  latitude?: number | null;
+  longitude?: number | null;
   subscription_status?: "active" | "past_due" | "expired";
   created_at: string;
   // Joined snapshot fields
@@ -157,4 +159,75 @@ export interface CreateTicketParams {
   totalPrice: number;
   paymentStatus?: "pending" | "paid" | "credit_deducted";
   assignedCrewName?: string;
+}
+
+export interface WeatherCurrent {
+  temperatureC: number;
+  apparentTemperatureC: number;
+  humidityPct: number;
+  cloudCoverPct: number;
+  windSpeedKmh: number;
+  precipitationMm: number;
+  isDay: boolean;
+  weatherCode: number;
+  weatherDescription: string;
+  weatherIcon: string;
+  solarIrradianceWm2: number;
+  directNormalIrradianceWm2: number;
+  diffuseIrradianceWm2: number;
+}
+
+export interface WeatherDailyForecast {
+  date: string;
+  weatherCode: number;
+  weatherDescription: string;
+  weatherIcon: string;
+  tempMaxC: number;
+  tempMinC: number;
+  sunrise: string;
+  sunset: string;
+  uvIndexMax: number;
+  solarRadiationSumMjM2: number;
+  estimatedSolarYieldKwh: number;
+}
+
+export interface WeatherHourlyPoint {
+  time: string;
+  temperatureC: number;
+  cloudCoverPct: number;
+  solarIrradianceWm2: number;
+  precipitationProbability: number;
+}
+
+export interface BessAutomationDirective {
+  status: "solar_precharge" | "peak_preservation" | "grid_feed_arbitrage" | "island_standby";
+  title: string;
+  recommendation: string;
+  chargeWindow: string;
+  dischargeWindow: string;
+  priority: "high" | "medium" | "normal";
+  cloudCoverWarning: boolean;
+  temperatureDeratingPct: number;
+}
+
+export interface SiteWeatherForecast {
+  siteId: string;
+  latitude: number;
+  longitude: number;
+  locationCity: string;
+  locationState: string;
+  current: WeatherCurrent;
+  daily: WeatherDailyForecast[];
+  hourly: WeatherHourlyPoint[];
+  solarForecast: {
+    todayEstimatedYieldKwh: number;
+    tomorrowEstimatedYieldKwh: number;
+    solarCapacityKwp: number;
+    moduleTempEstimatedC: number;
+    thermalDeratingPct: number;
+    cloudDeratingPct: number;
+    irradianceCondition: "optimal" | "moderate" | "low" | "night";
+  };
+  bessAutomation: BessAutomationDirective;
+  lastUpdated: string;
 }
