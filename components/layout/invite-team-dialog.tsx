@@ -480,12 +480,12 @@ export function InviteTeamDialog({
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-[10px] font-mono uppercase text-slate-400">Password</span>
-                    <div className="text-xs font-mono font-bold text-white">demo1234</div>
+                    <div className="text-xs font-mono font-bold text-white">NeonEnergy@2026!</div>
                   </div>
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => handleCopyCreds("password", "demo1234")}
+                    onClick={() => handleCopyCreds("password", "NeonEnergy@2026!")}
                   >
                     {copiedCreds === "password" ? (
                       <Check className="size-3 text-[#00E676]" />
