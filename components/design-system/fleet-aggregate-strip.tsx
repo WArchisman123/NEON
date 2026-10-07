@@ -87,7 +87,7 @@ export function FleetAggregateStrip({ aggregates }: { aggregates?: FleetAggregat
         return (
           <div
             key={kpi.title}
-            className={`rounded-xl bg-[#0B0D13] border border-white/[0.08] ${kpi.glowColor} transition-all p-4 relative overflow-hidden group shadow-md shadow-black/40`}
+            className={`rounded-xl bg-theme-card border border-theme-subtle ${kpi.glowColor} transition-all p-4 relative overflow-hidden group shadow-sm`}
           >
             {/* Top Hover Accent Glow Strip */}
             <div
@@ -95,22 +95,22 @@ export function FleetAggregateStrip({ aggregates }: { aggregates?: FleetAggregat
             />
 
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-400 truncate">
+              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-theme-secondary truncate">
                 {kpi.title}
               </span>
               <Icon className={`size-4 shrink-0 ${kpi.iconColor}`} />
             </div>
 
-            <div className="text-xl sm:text-2xl font-black font-mono text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-black font-mono text-theme-primary tracking-tight">
               {kpi.value}{" "}
-              <span className="text-xs sm:text-sm font-normal text-slate-400">
+              <span className="text-xs sm:text-sm font-normal text-theme-secondary">
                 {kpi.unit}
               </span>
             </div>
 
             <div className="mt-2 flex items-center gap-1.5 text-[11px] font-mono">
               <span className={`font-bold ${kpi.deltaColor}`}>{kpi.delta}</span>
-              <span className="text-slate-500 font-sans text-[10px] truncate">
+              <span className="text-theme-secondary font-sans text-[10px] truncate">
                 {kpi.deltaLabel}
               </span>
             </div>

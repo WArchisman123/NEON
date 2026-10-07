@@ -40,6 +40,22 @@ export interface SiteRecord {
   bess_discharge_today_kwh?: number;
   co2_saved_today_kg?: number;
   snapshot_time?: string;
+  // Extended EPC, Contractual Target & Competitor-benchmark Telemetry Fields
+  dc_capacity_kwp?: number;
+  commissioned_by?: string;
+  commissioned_date?: string;
+  warranty_expiry_date?: string;
+  annual_target_mwh?: number;
+  annual_achieved_mwh?: number;
+  feed_in_tariff_inr?: number;
+  coal_saved_today_kg?: number;
+  trees_planted_today?: number;
+  cuf_pct?: number;
+  specific_yield_kwh_per_kwp?: number;
+  peak_irradiance_wm2?: number;
+  peak_irradiance_time?: string;
+  pv_dg_fuel_saved_liters?: number;
+  pv_dg_fuel_saved_kwh?: number;
 }
 
 export interface SiteDeviceRecord {
@@ -231,3 +247,55 @@ export interface SiteWeatherForecast {
   bessAutomation: BessAutomationDirective;
   lastUpdated: string;
 }
+
+export interface MpptChannelPoint {
+  channel: number;
+  currentA: number;
+  voltageV: number;
+  powerKw: number;
+  status: "optimal" | "soiling_warning" | "fuse_check" | "clipping";
+}
+
+export interface MpptDiurnalSample {
+  time: string;
+  hour: number;
+  minute: number;
+  irradianceWm2: number;
+  channels: MpptChannelPoint[];
+}
+
+export interface ModbusRegisterItem {
+  address: number;
+  hexAddress: string;
+  name: string;
+  key: string;
+  value: number | string;
+  unit: string;
+  description: string;
+  category:
+    | "inverter_status"
+    | "dc_voltage"
+    | "dc_current"
+    | "string_current"
+    | "ac_grid"
+    | "energy_lifetime";
+  status?: "normal" | "warning" | "critical";
+}
+
+export interface InverterModbusSnapshot {
+  inverterId: string;
+  inverterName: string;
+  model: string;
+  serialNumber: string;
+  slaveId: number;
+  baudRate: string;
+  eventCode: number;
+  eventMessage: string;
+  internalTempC: number;
+  dcInputPowerKw: number;
+  acOutputPowerKw: number;
+  efficiencyPct: number;
+  lastPollTimestamp: string;
+  registers: ModbusRegisterItem[];
+}
+

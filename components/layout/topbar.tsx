@@ -3,29 +3,119 @@
 import React from "react";
 import Link from "next/link";
 import { UserButton, OrganizationSwitcher, useAuth, useOrganization } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Bell, UserPlus } from "lucide-react";
 import { InviteTeamDialog } from "@/components/layout/invite-team-dialog";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { useTheme } from "@/components/theme/theme-provider";
 
 const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
 
 export function Topbar() {
   const { orgId } = useAuth();
   const { organization } = useOrganization();
+  const { resolvedTheme } = useTheme();
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
+
+  const isDark = resolvedTheme !== "light";
 
   // Organization switcher is shown ONLY for the master admin org (iRasus Technologies).
   // For all other tenant users, it is completely hidden and replaced with a static badge.
   const isMasterOrg = orgId === MASTER_ORG_ID;
 
+  const orgSwitcherAppearance = React.useMemo(
+    () => ({
+      baseTheme: isDark ? dark : undefined,
+      theme: isDark ? dark : undefined,
+      variables: {
+        colorPrimary: "#FF2A85",
+        colorPrimaryForeground: "#FFFFFF",
+        colorBackground: isDark ? "#0B0D13" : "#FFFFFF",
+        colorForeground: isDark ? "#F8FAFC" : "#0B0F19",
+        colorNeutral: isDark ? "#F8FAFC" : "#0B0F19",
+        colorMutedForeground: isDark ? "#94A3B8" : "#475569",
+        colorInput: isDark ? "#121622" : "#EAEFF8",
+        colorBorder: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(15, 23, 42, 0.12)",
+        borderRadius: "0.5rem",
+      },
+      elements: {
+        organizationSwitcherTrigger:
+          "bg-theme-elevated border border-theme-subtle hover:border-[#FF2A85]/40 text-theme-primary text-xs font-semibold px-2 sm:px-2.5 py-1.5 rounded-lg transition-all min-h-[36px]",
+        organizationPreviewTextContainer:
+          "text-theme-primary text-xs font-semibold max-w-[120px] sm:max-w-[200px] truncate",
+        organizationPreviewMainIdentifier:
+          "text-theme-primary font-semibold text-xs",
+        organizationPreviewSecondaryIdentifier:
+          "text-theme-secondary text-[11px]",
+        organizationSwitcherPopoverCard:
+          "bg-theme-card border border-theme-subtle shadow-2xl text-theme-primary",
+        organizationSwitcherPopoverActionButton:
+          "text-theme-primary hover:bg-theme-elevated transition-colors",
+        organizationSwitcherPopoverActionButtonText:
+          "text-theme-primary font-medium text-xs",
+        organizationSwitcherPopoverActionButtonIcon:
+          "text-theme-secondary",
+        organizationSwitcherPopoverFooter:
+          "border-t border-theme-subtle bg-theme-elevated/40",
+        organizationListItem:
+          "hover:bg-theme-elevated transition-colors text-theme-primary",
+        organizationListItemButton:
+          "text-theme-primary hover:bg-theme-elevated transition-colors",
+        userPreviewMainIdentifier:
+          "text-theme-primary font-semibold",
+        userPreviewSecondaryIdentifier:
+          "text-theme-secondary",
+      },
+    }),
+    [isDark]
+  );
+
+  const userButtonAppearance = React.useMemo(
+    () => ({
+      baseTheme: isDark ? dark : undefined,
+      theme: isDark ? dark : undefined,
+      variables: {
+        colorPrimary: "#FF2A85",
+        colorPrimaryForeground: "#FFFFFF",
+        colorBackground: isDark ? "#0B0D13" : "#FFFFFF",
+        colorForeground: isDark ? "#F8FAFC" : "#0B0F19",
+        colorNeutral: isDark ? "#F8FAFC" : "#0B0F19",
+        colorMutedForeground: isDark ? "#94A3B8" : "#475569",
+        colorInput: isDark ? "#121622" : "#EAEFF8",
+        colorBorder: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(15, 23, 42, 0.12)",
+        borderRadius: "0.5rem",
+      },
+      elements: {
+        userButtonAvatarBox:
+          "size-8 rounded-full border border-[#FF2A85]/40 shadow-[0_0_10px_rgba(255,42,133,0.3)]",
+        userButtonPopoverCard:
+          "bg-theme-card border border-theme-subtle shadow-2xl text-theme-primary",
+        userButtonPopoverActionButton:
+          "text-theme-primary hover:bg-theme-elevated transition-colors",
+        userButtonPopoverActionButtonText:
+          "text-theme-primary font-medium",
+        userButtonPopoverActionButtonIcon:
+          "text-theme-secondary group-hover:text-theme-primary",
+        userButtonPopoverFooter:
+          "border-t border-theme-subtle bg-theme-elevated/40",
+        userPreviewMainIdentifier:
+          "text-theme-primary font-semibold",
+        userPreviewSecondaryIdentifier:
+          "text-theme-secondary",
+      },
+    }),
+    [isDark]
+  );
+
   return (
-    <header className="sticky top-0 z-30 h-14 sm:h-16 w-full bg-[#0B0D13]/90 backdrop-blur-md border-b border-white/[0.08] px-3 sm:px-6 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-14 sm:h-16 w-full bg-theme-card/90 backdrop-blur-md border-b border-theme-subtle px-3 sm:px-6 flex items-center justify-between transition-colors duration-200">
       {/* Left: Brand + Clerk Organization Switcher */}
       <div className="flex items-center gap-3 sm:gap-6">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="size-8 sm:size-9 rounded-lg bg-gradient-to-br from-[#FF2A85] to-[#B00055] flex items-center justify-center text-white font-black text-base sm:text-lg shadow-[0_0_15px_rgba(255,42,133,0.5)] group-hover:shadow-[0_0_22px_rgba(255,42,133,0.7)] transition-all">
             ⚡
           </div>
-          <span className="font-black tracking-wider text-base sm:text-lg text-white">
+          <span className="font-black tracking-wider text-base sm:text-lg text-theme-primary">
             NEON<span className="text-[#FF2A85]">.ENERGY</span>
           </span>
         </Link>
@@ -35,19 +125,10 @@ export function Topbar() {
           {isMasterOrg ? (
             <OrganizationSwitcher
               hidePersonal={false}
-              appearance={{
-                elements: {
-                  organizationSwitcherTrigger:
-                    "bg-[#121622] border border-white/[0.08] hover:border-[#FF2A85]/40 text-slate-200 text-xs font-semibold px-2 sm:px-2.5 py-1.5 rounded-lg transition-all min-h-[36px]",
-                  organizationPreviewTextContainer:
-                    "text-slate-200 text-xs font-semibold max-w-[120px] sm:max-w-[200px] truncate",
-                  organizationSwitcherPopoverCard:
-                    "bg-[#0B0D13] border border-white/[0.1] shadow-2xl text-slate-100",
-                },
-              }}
+              appearance={orgSwitcherAppearance}
             />
           ) : (
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#121622] border border-white/[0.08] text-xs font-semibold text-slate-300">
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-theme-elevated border border-theme-subtle text-xs font-semibold text-theme-secondary">
               <span className="size-1.5 rounded-full bg-[#00E676]" />
               <span className="max-w-[120px] sm:max-w-[180px] truncate">
                 {organization?.name || "Client Portal"}
@@ -57,35 +138,16 @@ export function Topbar() {
         </div>
       </div>
 
-      {/* Right: Search, Alerts & Clerk UserButton */}
+      {/* Right: Theme Toggle, Invite, Alerts & Clerk UserButton */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Quick Search Shortcut */}
-        {/* <button
-          type="button"
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              const searchInput = document.getElementById("fleet-search-input");
-              if (searchInput) {
-                searchInput.focus();
-              } else {
-                router.push("/?focusSearch=true");
-              }
-            }
-          }}
-          className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#121622] border border-white/[0.08] text-xs font-mono text-slate-400 hover:text-white hover:border-white/[0.2] transition-colors"
-        >
-          <Search className="size-3.5 text-slate-400" />
-          <span>Search telemetry...</span>
-          <kbd className="px-1.5 py-0.5 rounded bg-black/50 text-[10px] text-slate-400 border border-white/[0.1]">
-            ⌘K
-          </kbd>
-        </button> */}
+        {/* Dual-Theme Switcher */}
+        <ThemeToggle />
 
         {/* Invite Team Action Button */}
         <button
           type="button"
           onClick={() => setIsInviteOpen(true)}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#FF2A85]/15 hover:bg-[#FF2A85]/25 border border-[#FF2A85]/40 hover:border-[#FF2A85] text-xs font-mono font-bold text-white shadow-[0_0_12px_rgba(255,42,133,0.3)] transition-all cursor-pointer select-none min-h-[36px]"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#FF2A85]/15 hover:bg-[#FF2A85]/25 border border-[#FF2A85]/40 hover:border-[#FF2A85] text-xs font-mono font-bold text-theme-primary shadow-[0_0_12px_rgba(255,42,133,0.3)] transition-all cursor-pointer select-none min-h-[36px]"
           title="Invite Team & Generate Org Link"
         >
           <UserPlus className="size-3.5 text-[#FF2A85]" />
@@ -96,24 +158,15 @@ export function Topbar() {
         <button
           type="button"
           aria-label="View system alarms"
-          className="relative p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.05] transition-colors"
+          className="relative p-2 rounded-lg text-theme-secondary hover:text-theme-primary hover:bg-theme-elevated transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
         >
           <Bell className="size-5" />
           <span className="absolute top-1.5 right-1.5 size-2 bg-[#FF2A85] rounded-full shadow-[0_0_8px_#FF2A85]" />
         </button>
 
         {/* Clerk User Button & Subscription Tier Badge */}
-        <div className="flex items-center gap-2 pl-2 border-l border-white/[0.08]">
-          <UserButton
-            appearance={{
-              elements: {
-                userButtonAvatarBox:
-                  "size-8 rounded-full border border-[#FF2A85]/40 shadow-[0_0_10px_rgba(255,42,133,0.3)]",
-                userButtonPopoverCard:
-                  "bg-[#0B0D13] border border-white/[0.1] shadow-2xl text-slate-100",
-              },
-            }}
-          />
+        <div className="flex items-center gap-2 pl-2 border-l border-theme-subtle">
+          <UserButton appearance={userButtonAppearance} />
           <Link
             href="/subscription"
             title="Manage Subscriptions & Site Licenses"

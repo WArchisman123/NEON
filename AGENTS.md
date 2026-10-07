@@ -101,9 +101,12 @@ The repository includes pre-installed skill packages under `.agents/skills/`. Re
 | `.agents/skills/migrate-radix-to-base/` | Migrating Radix UI primitives to Base UI | When converting shadcn primitives to base-ui components |
 
 ### Strict Rules:
-- **Strict Frontend Design System Adherence**: All frontend views, components, cards, drawers, and modal sheets must strictly adhere to the Cyber Black / Neon Pink design tokens (`#060709` Void Black background, `#0B0D13` Obsidian cards, `#121622` elevated modals, `#FF2A85` Neon Pink glow accents, `font-mono` for all electrical metrics). Never introduce light themes, generic grey palettes, or standard un-styled UI elements.
+- **Strict Frontend Design System Adherence**: All frontend views, components, cards, drawers, and modal sheets must adhere to the Dual-Theme Design System:
+  1. **Cyber Dark Mode (Default)**: Void Black (`#060709`), Obsidian Dark (`#0B0D13`), Cyber Glass (`#121622`), and glowing `#FF2A85` Neon Pink accents.
+  2. **High-Contrast Cyber Light Day Mode**: Crisp Solar Ice Canvas (`#F4F6FB`), Pure White Cards (`#FFFFFF`), Elevated Day Frost (`#EAEFF8`), Deep Charcoal Ink (`#0B0F19`), and `#FF2A85` Neon Pink accents.
+  Never introduce un-styled default components or generic drab grey cards.
 - **Never use Supabase Auth**: Authentication must always be handled via **Clerk**.
-- **No Light Themes**: Neon Energy is strictly a **Cyber Black / Neon Pink** high-contrast platform. Do not add white background page containers or generic grey cards.
+- **Dual-Theme Support**: Instant toggle between Cyber Dark (control room) and High-Contrast Cyber Light Day Mode (outdoor field ops) via the Topbar ThemeToggle.
 - **Mobile-First Touch Ergonomics**: All interactive elements must satisfy minimum $48 \times 48\ px$ touch targets on mobile viewports.
 - **No Direct Database Bypass**: Frontend client components must never execute raw unvalidated database mutations. Use Server Actions or validated API routes with Clerk session checks.
 
@@ -161,24 +164,25 @@ Maintain clean boundaries:
 
 ---
 
-## 6. Design System & Neon Pink Palette Tokens
+## 6. Design System & Dual-Theme Palette Tokens
 
-| Semantic Role | Token | Value |
-|---|---|---|
-| Background Canvas | Void Black | `#060709` |
-| Card & Container Surface | Obsidian Dark | `#0B0D13` |
-| Popovers, Drawers, Modals | Elevated Cyber Glass | `#121622` |
-| Brand Primary & Active Glow | Neon Pink | `#FF2A85` |
-| Primary Glow Shadow | Neon Pink Glow | `shadow-[0_0_15px_rgba(255,42,133,0.35)]` |
-| Solar PV Active Power | Electric Amber / Yellow | `#FFD600` |
-| BESS Storage / SoC Gauge | Laser Cyan | `#00F0FF` |
-| Utility Grid Interconnection | Electric Purple | `#9D4EDD` |
-| Diesel Generator Backup | Hi-Viz Orange | `#FF6B00` |
-| Normal / Operational Status | Cyber Emerald | `#00E676` |
-| Warning / Derating State | Vivid Amber | `#FFAB00` |
-| Critical Fault / Trip State | Neon Red | `#FF1744` |
-| Default Border | Subtle Frost Glass | `border-white/[0.08]` |
-| Active Card Border | Neon Pink Glass | `border-[#FF2A85]/40` |
+| Semantic Role | Cyber Dark Token | Cyber Dark Value | High-Contrast Day Token | Day Light Value |
+|---|---|---|---|---|
+| Background Canvas | Void Black | `#060709` | Solar Ice Canvas | `#F4F6FB` |
+| Card & Surface | Obsidian Dark | `#0B0D13` | Pure White Slate | `#FFFFFF` |
+| Modals, Drawers | Elevated Cyber Glass | `#121622` | Elevated Day Frost | `#EAEFF8` |
+| Brand Primary CTA | Neon Pink | `#FF2A85` | Neon Pink | `#FF2A85` |
+| Primary Glow Shadow | Neon Pink Glow | `shadow-[0_0_15px_rgba(255,42,133,0.35)]` | Neon Pink Glow | `shadow-[0_0_12px_rgba(255,42,133,0.25)]` |
+| Solar PV Active Power | Electric Amber | `#FFD600` | High-Contrast Amber | `#D97706` |
+| BESS Storage / SoC Gauge | Laser Cyan | `#00F0FF` | High-Visibility Blue | `#0284C7` |
+| Utility Grid Interconnection | Electric Purple | `#9D4EDD` | Deep Grid Violet | `#7C3AED` |
+| Diesel Generator Backup | Hi-Viz Orange | `#FF6B00` | Crisp DG Orange | `#EA580C` |
+| Normal / Operational Status | Cyber Emerald | `#00E676` | Day Emerald | `#059669` |
+| Warning / Derating State | Vivid Amber | `#FFAB00` | Day Amber | `#D97706` |
+| Critical Fault / Trip State | Neon Red | `#FF1744` | High-Contrast Crimson | `#DC2626` |
+| Default Border | Subtle Frost Glass | `border-white/[0.08]` | Subtle Slate Border | `rgba(15, 23, 42, 0.09)` |
+| Active Card Border | Neon Pink Glass | `border-[#FF2A85]/40` | Neon Pink Glass | `border-[#FF2A85]/50` |
+| Numerical Monospace Ink | Radiant Slate | `#F8FAFC` | Deep Charcoal Ink | `#0B0F19` |
 
 ### Monospace Rule
 All electrical metrics ($kW$, $MW$, $V$, $A$, $Hz$, $\%$, $kWh$, $^\circ C$) **must use `font-mono`** for clean alignment and control-room legibility.

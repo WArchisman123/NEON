@@ -31,11 +31,13 @@ export function SwatchCard({
   };
 
   return (
-    <div className="rounded-xl bg-[#0B0D13] border border-white/[0.08] hover:border-[#FF2A85]/40 transition-all p-4 flex flex-col justify-between group relative overflow-hidden">
+    <div className="rounded-xl bg-theme-card border border-theme-subtle hover:border-[#FF2A85]/40 transition-all p-4 flex flex-col justify-between group relative overflow-hidden shadow-sm">
       <div>
         {/* Swatch Preview Block */}
         <div
-          className={`h-20 w-full rounded-lg mb-3 flex items-center justify-center font-mono text-xs font-bold transition-all relative overflow-hidden ${border || "border border-white/[0.1]"} ${glowClass || ""}`}
+          className={`h-20 w-full rounded-lg mb-3 flex items-center justify-center font-mono text-xs font-bold transition-all relative overflow-hidden ${
+            border || "border border-theme-subtle"
+          } ${glowClass || ""}`}
           style={{ backgroundColor: hex }}
         >
           <span
@@ -47,13 +49,13 @@ export function SwatchCard({
 
         {/* Details */}
         <div className="flex items-start justify-between gap-2">
-          <h4 className="text-sm font-bold text-white group-hover:text-[#FF2A85] transition-colors">
+          <h4 className="text-sm font-bold text-theme-primary group-hover:text-[#FF2A85] transition-colors">
             {name}
           </h4>
           <button
             type="button"
             onClick={handleCopy}
-            className="p-1 rounded bg-[#121622] text-slate-400 hover:text-white border border-white/[0.08] hover:border-[#FF2A85]/40 transition-all"
+            className="p-1 rounded bg-theme-elevated text-theme-secondary hover:text-theme-primary border border-theme-subtle hover:border-[#FF2A85]/40 transition-all cursor-pointer"
             title="Copy Hex Code"
           >
             {copied ? (
@@ -64,14 +66,14 @@ export function SwatchCard({
           </button>
         </div>
 
-        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+        <p className="text-[11px] text-theme-secondary mt-1 leading-relaxed">
           {role}
         </p>
       </div>
 
-      <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-slate-500">
+      <div className="mt-3 pt-2.5 border-t border-theme-subtle flex items-center justify-between text-[10px] font-mono text-theme-secondary">
         <span>Tailwind</span>
-        <code className="text-[#FF2A85] bg-[#121622] px-1.5 py-0.5 rounded border border-white/[0.04]">
+        <code className="text-[#FF2A85] bg-theme-elevated px-1.5 py-0.5 rounded border border-theme-subtle">
           {tailwind}
         </code>
       </div>

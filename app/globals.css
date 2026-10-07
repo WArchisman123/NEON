@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
 @theme {
   --color-void: #060709;
   --color-obsidian: #0B0D13;
@@ -18,24 +21,157 @@
   color-scheme: dark;
   --background: #060709;
   --foreground: #F8FAFC;
+  --card: #0B0D13;
+  --card-foreground: #F8FAFC;
+  --elevated: #121622;
+  --muted: #94A3B8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 42, 133, 0.4);
+}
+
+html.dark, :root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #060709;
+  --foreground: #F8FAFC;
+  --card: #0B0D13;
+  --card-foreground: #F8FAFC;
+  --elevated: #121622;
+  --muted: #94A3B8;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 42, 133, 0.4);
+}
+
+html.light, :root[data-theme="light"] {
+  color-scheme: light;
+  --background: #F4F6FB;
+  --foreground: #0B0F19;
+  --card: #FFFFFF;
+  --card-foreground: #0B0F19;
+  --elevated: #EAEFF8;
+  --muted: #475569;
+  --border: rgba(15, 23, 42, 0.09);
+  --border-hover: rgba(255, 42, 133, 0.5);
 }
 
 html {
-  color-scheme: dark;
+  transition: color-scheme 0.2s ease;
 }
 
 body {
-  color-scheme: dark;
-  background-color: #060709;
-  color: #F8FAFC;
+  background-color: var(--background);
+  color: var(--foreground);
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ==========================================================================
-   Clerk Cyber Black / Neon Pink Overrides
-   Guarantees zero dark-on-dark text and zero white inputs across all Clerk flows
+   Semantic Theme Surface Utilities
+   ========================================================================== */
+.bg-theme-canvas {
+  background-color: var(--background);
+}
+
+.bg-theme-card {
+  background-color: var(--card);
+}
+
+.bg-theme-elevated {
+  background-color: var(--elevated);
+}
+
+.text-theme-primary {
+  color: var(--foreground);
+}
+
+.text-theme-secondary {
+  color: var(--muted);
+}
+
+.border-theme-subtle {
+  border-color: var(--border);
+}
+
+.border-theme-hover:hover {
+  border-color: var(--border-hover);
+}
+
+/* In Light mode, automatically adapt legacy dark card and modal containers if classes are static */
+html.light .bg-\[\#060709\] {
+  background-color: var(--background) !important;
+}
+
+html.light .bg-\[\#0B0D13\] {
+  background-color: var(--card) !important;
+}
+
+html.light .bg-\[\#0B0D13\]\/90,
+html.light .bg-\[\#0B0D13\]\/95 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+html.light .bg-\[\#121622\] {
+  background-color: var(--elevated) !important;
+}
+
+html.light .bg-\[\#121622\]\/60 {
+  background-color: rgba(234, 239, 248, 0.75) !important;
+}
+
+html.light .border-white\/\[0\.08\],
+html.light .border-white\/\[0\.06\],
+html.light .border-white\/\[0\.04\],
+html.light .border-white\/\[0\.1\] {
+  border-color: var(--border) !important;
+}
+
+html.light .text-white {
+  color: var(--foreground) !important;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300 {
+  color: #1E293B !important;
+}
+
+html.light .text-slate-400,
+html.light .text-slate-500 {
+  color: var(--muted) !important;
+}
+
+/* Preserve distinct neon glow colors across light and dark */
+html.light .text-\[\#FF2A85\] {
+  color: #FF2A85 !important;
+}
+
+html.light .text-\[\#FFD600\] {
+  color: #B45309 !important; /* High-contrast golden amber for light mode */
+}
+
+html.light .text-\[\#00F0FF\] {
+  color: #0284C7 !important; /* High-contrast sky cyan for light mode */
+}
+
+html.light .text-\[\#00E676\] {
+  color: #059669 !important; /* High-contrast emerald for light mode */
+}
+
+html.light .text-\[\#FF6B00\] {
+  color: #EA580C !important; /* High-contrast orange for light mode */
+}
+
+html.light .text-\[\#9D4EDD\] {
+  color: #7C3AED !important; /* High-contrast violet for light mode */
+}
+
+html.light .text-\[\#FF1744\] {
+  color: #DC2626 !important; /* High-contrast crimson for light mode */
+}
+
+/* ==========================================================================
+   Clerk Dual-Theme Overrides
    ========================================================================== */
 .cl-card,
 .cl-modalContent,
@@ -43,10 +179,11 @@ body {
 .cl-organizationSwitcherPopoverCard,
 .cl-organizationProfile,
 .cl-userProfile,
-.cl-createOrganization {
-  background-color: #0B0D13 !important;
-  color: #F8FAFC !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+.cl-createOrganization,
+.cl-popoverBox {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
 }
 
 .cl-headerTitle,
@@ -54,8 +191,10 @@ body {
 .cl-profileSectionTitle,
 .cl-formFieldLabel,
 .cl-formFieldLabelRow,
-.cl-formTitle {
-  color: #F8FAFC !important;
+.cl-formTitle,
+.cl-userPreviewMainIdentifier,
+.cl-organizationPreviewMainIdentifier {
+  color: var(--foreground) !important;
 }
 
 .cl-headerSubtitle,
@@ -65,8 +204,180 @@ body {
 .cl-footerActionText,
 .cl-fileDropAreaHint,
 .cl-formSubtitle,
-.cl-breadcrumbsItem {
+.cl-breadcrumbsItem,
+.cl-userPreviewSecondaryIdentifier,
+.cl-organizationPreviewSecondaryIdentifier {
+  color: var(--muted) !important;
+}
+
+.cl-userButtonPopoverActionButton,
+.cl-organizationSwitcherPopoverActionButton,
+.cl-organizationListItemButton {
+  color: var(--foreground) !important;
+  background-color: transparent !important;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cl-userButtonPopoverActionButtonText,
+.cl-organizationSwitcherPopoverActionButtonText {
+  color: var(--foreground) !important;
+}
+
+.cl-userButtonPopoverActionButtonIcon,
+.cl-organizationSwitcherPopoverActionButtonIcon {
+  color: var(--muted) !important;
+}
+
+.cl-userButtonPopoverActionButton:hover,
+.cl-organizationSwitcherPopoverActionButton:hover,
+.cl-organizationListItemButton:hover,
+.cl-organizationListItem:hover {
+  background-color: var(--elevated) !important;
+}
+
+.cl-userButtonPopoverActionButton:hover .cl-userButtonPopoverActionButtonIcon,
+.cl-organizationSwitcherPopoverActionButton:hover .cl-organizationSwitcherPopoverActionButtonIcon {
+  color: #FF2A85 !important;
+}
+
+.cl-userButtonPopoverFooter,
+.cl-organizationSwitcherPopoverFooter {
+  background-color: var(--elevated) !important;
+  border-top: 1px solid var(--border) !important;
+}
+
+.cl-dividerLine {
+  background-color: var(--border) !important;
+}
+
+/* Light Theme High-Contrast Refinements for Clerk Portals */
+html.light .cl-userButtonPopoverCard,
+html.light .cl-organizationSwitcherPopoverCard,
+html.light .cl-card,
+html.light .cl-modalContent,
+html.light .cl-popoverBox {
+  background-color: #FFFFFF !important;
+  color: #0B0F19 !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .cl-userPreviewMainIdentifier,
+html.light .cl-organizationPreviewMainIdentifier,
+html.light .cl-userButtonPopoverActionButtonText,
+html.light .cl-organizationSwitcherPopoverActionButtonText {
+  color: #0B0F19 !important;
+}
+
+html.light .cl-userPreviewSecondaryIdentifier,
+html.light .cl-organizationPreviewSecondaryIdentifier {
+  color: #475569 !important;
+}
+
+html.light .cl-userButtonPopoverActionButton,
+html.light .cl-organizationSwitcherPopoverActionButton,
+html.light .cl-organizationListItemButton {
+  color: #0B0F19 !important;
+  background-color: transparent !important;
+}
+
+html.light .cl-userButtonPopoverActionButton:hover,
+html.light .cl-organizationSwitcherPopoverActionButton:hover,
+html.light .cl-organizationListItemButton:hover,
+html.light .cl-organizationListItem:hover {
+  background-color: #EAEFF8 !important;
+  color: #0B0F19 !important;
+}
+
+html.light .cl-userButtonPopoverActionButtonIcon,
+html.light .cl-organizationSwitcherPopoverActionButtonIcon {
+  color: #475569 !important;
+}
+
+html.light .cl-userButtonPopoverActionButton:hover .cl-userButtonPopoverActionButtonIcon,
+html.light .cl-organizationSwitcherPopoverActionButton:hover .cl-organizationSwitcherPopoverActionButtonIcon {
+  color: #FF2A85 !important;
+}
+
+html.light .cl-userButtonPopoverFooter,
+html.light .cl-organizationSwitcherPopoverFooter {
+  background-color: #F4F6FB !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.09) !important;
+}
+
+html.light .cl-userButtonPopoverFooter a,
+html.light .cl-organizationSwitcherPopoverFooter a {
+  color: #64748B !important;
+}
+
+html.light .cl-userButtonPopoverFooter a:hover,
+html.light .cl-organizationSwitcherPopoverFooter a:hover {
+  color: #FF2A85 !important;
+}
+
+/* Dark Theme Obsidian Refinements for Clerk Portals */
+html.dark .cl-userButtonPopoverCard,
+html.dark .cl-organizationSwitcherPopoverCard,
+html.dark .cl-card,
+html.dark .cl-modalContent,
+html.dark .cl-popoverBox {
+  background-color: #0B0D13 !important;
+  color: #F8FAFC !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85) !important;
+}
+
+html.dark .cl-userPreviewMainIdentifier,
+html.dark .cl-organizationPreviewMainIdentifier,
+html.dark .cl-userButtonPopoverActionButtonText,
+html.dark .cl-organizationSwitcherPopoverActionButtonText {
+  color: #F8FAFC !important;
+}
+
+html.dark .cl-userPreviewSecondaryIdentifier,
+html.dark .cl-organizationPreviewSecondaryIdentifier {
   color: #94A3B8 !important;
+}
+
+html.dark .cl-userButtonPopoverActionButton,
+html.dark .cl-organizationSwitcherPopoverActionButton,
+html.dark .cl-organizationListItemButton {
+  color: #F8FAFC !important;
+  background-color: transparent !important;
+}
+
+html.dark .cl-userButtonPopoverActionButton:hover,
+html.dark .cl-organizationSwitcherPopoverActionButton:hover,
+html.dark .cl-organizationListItemButton:hover,
+html.dark .cl-organizationListItem:hover {
+  background-color: #121622 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark .cl-userButtonPopoverActionButtonIcon,
+html.dark .cl-organizationSwitcherPopoverActionButtonIcon {
+  color: #94A3B8 !important;
+}
+
+html.dark .cl-userButtonPopoverActionButton:hover .cl-userButtonPopoverActionButtonIcon,
+html.dark .cl-organizationSwitcherPopoverActionButton:hover .cl-organizationSwitcherPopoverActionButtonIcon {
+  color: #FF2A85 !important;
+}
+
+html.dark .cl-userButtonPopoverFooter,
+html.dark .cl-organizationSwitcherPopoverFooter {
+  background-color: #060709 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .cl-userButtonPopoverFooter a,
+html.dark .cl-organizationSwitcherPopoverFooter a {
+  color: #64748B !important;
+}
+
+html.dark .cl-userButtonPopoverFooter a:hover,
+html.dark .cl-organizationSwitcherPopoverFooter a:hover {
+  color: #FF2A85 !important;
 }
 
 .cl-formFieldInput,
@@ -75,9 +386,9 @@ input[name="name"],
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-  background-color: #121622 !important;
-  color: #F8FAFC !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background-color: var(--elevated) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
 }
 
 .cl-formFieldInput:focus,
@@ -99,9 +410,9 @@ input[type="password"] {
 }
 
 .cl-fileDropArea {
-  background-color: #121622 !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #F8FAFC !important;
+  background-color: var(--elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
 }
 
 .cl-fileDropAreaButtonPrimary {
@@ -195,12 +506,16 @@ input[type="password"] {
 }
 
 ::-webkit-scrollbar-track {
-  background: #060709;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
   background: #1e2433;
   border-radius: 9999px;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
 }
 
 ::-webkit-scrollbar-thumb:hover {

@@ -24,7 +24,7 @@ export function MobileBottomBar({ className }: MobileBottomBarProps) {
   return (
     <nav
       className={cn(
-        "fixed bottom-0 left-0 right-0 h-16 z-40 bg-[#0B0D13]/95 backdrop-blur-lg border-t border-white/[0.1] px-2 flex items-center justify-around",
+        "fixed bottom-0 left-0 right-0 h-16 z-40 bg-theme-card/95 backdrop-blur-lg border-t border-theme-subtle px-2 flex items-center justify-around transition-colors duration-200",
         className
       )}
     >
@@ -42,7 +42,7 @@ export function MobileBottomBar({ className }: MobileBottomBarProps) {
               "flex flex-col items-center justify-center flex-1 h-full py-1 gap-1 transition-all min-w-[48px] min-h-[48px] select-none",
               isActive
                 ? "text-[#FF2A85] drop-shadow-[0_0_8px_rgba(255,42,133,0.6)]"
-                : "text-slate-400 hover:text-slate-200"
+                : "text-theme-secondary hover:text-theme-primary"
             )}
           >
             <Icon className="size-5" />

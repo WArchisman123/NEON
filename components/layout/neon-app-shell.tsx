@@ -11,7 +11,7 @@ interface NeonAppShellProps {
 
 export function NeonAppShell({ children }: NeonAppShellProps) {
   return (
-    <div className="min-h-screen bg-[#060709] text-slate-100 flex flex-col antialiased selection:bg-[#FF2A85] selection:text-white">
+    <div className="min-h-screen bg-theme-canvas text-theme-primary transition-colors duration-200 flex flex-col antialiased selection:bg-[#FF2A85] selection:text-white">
       <Topbar />
 
       <div className="flex flex-1 items-stretch min-w-0">

@@ -3,35 +3,35 @@
 
 > **For implementation agents:** Read this file in full before building any UI component.  
 > Every class name, CSS token, color code, responsive breakpoint, and animation pattern in this document represents the exact design language of **Neon Energy**.  
-> Do not introduce conflicting light-theme styles, generic grey palettes, or standard default frameworks without applying the black-neon/pink design system.
+> Neon Energy operates a **Dual-Theme Design System**: Cyber Dark Mode (default for 24/7 control room desks) and High-Contrast Cyber Light Day Mode (optimized for intense outdoor sunlight on mobile field devices). Never introduce drab grey palettes or un-styled default components.
 
 ---
 
-## 1. Design Tokens & Cyberpunk Color Palette
+## 1. Design Tokens & Dual-Theme Architecture
 
-The visual identity of Neon Energy is rooted in **deep void blacks, obsidian glassmorphism, and radiant neon luminescence**. High-contrast glowing accents allow field technicians to read microgrid telemetry clearly in intense direct sunlight on mobile devices, while providing a stunning dark control-room dashboard on desktop screens.
+The visual identity of Neon Energy is rooted in **deep void blacks and obsidian glassmorphism for Cyber Dark Mode, and crisp solar ice canvas and pure white slate for Cyber Light Day Mode**, united by radiant **Neon Pink (`#FF2A85`)** luminescence.
 
-### 1.1 Core Color Swatches
+### 1.1 Dual-Theme Color Swatches
 
-| Token Name | Hex Code | Tailwind Equivalent / Arbitrary | Usage / Semantic Role |
-|---|---|---|---|
-| **Void Black (Page Background)** | `#060709` | `bg-[#060709]` | Root canvas background, full-screen wrapper |
-| **Obsidian Card Surface** | `#0B0D13` | `bg-[#0B0D13]` | Dashboard cards, metric containers, table rows |
-| **Elevated Surface (Popover/Modal)** | `#121622` | `bg-[#121622]` | Modals, slide-over drawers, dropdown menus |
-| **Neon Pink (Brand Primary)** | `#FF2A85` | `text-[#FF2A85]`, `bg-[#FF2A85]` | Main CTA buttons, brand badges, active links, Load node |
-| **Neon Pink Glow** | `rgba(255,42,133,0.35)`| `shadow-[0_0_15px_rgba(255,42,133,0.35)]` | Button glow, card focus ring, active pulse |
-| **Solar Amber (Electric Yellow)** | `#FFD600` | `text-[#FFD600]`, `bg-[#FFD600]` | Solar PV active generation, irradiance, daytime charts |
-| **BESS Cyan (Laser Blue)** | `#00F0FF` | `text-[#00F0FF]`, `bg-[#00F0FF]` | Battery storage, SoC gauge, charging/discharging flow |
-| **Grid Violet (Electric Purple)** | `#9D4EDD` | `text-[#9D4EDD]`, `bg-[#9D4EDD]` | Utility grid interconnection, import/export meters |
-| **DG Hi-Viz Orange** | `#FF6B00` | `text-[#FF6B00]`, `bg-[#FF6B00]` | Diesel generator, backup power, engine running state |
-| **Normal / Online Green** | `#00E676` | `text-[#00E676]`, `bg-[#00E676]` | Plant healthy, telemetry connected, online status |
-| **Warning Amber** | `#FFAB00` | `text-[#FFAB00]`, `bg-[#FFAB00]` | Derating, minor cell delta-V, string soiling |
-| **Critical Alarm Pink/Red** | `#FF1744` | `text-[#FF1744]`, `bg-[#FF1744]` | Tripped contactor, thermal runaway alert, plant offline |
-| **Border Default (Dark Glass)** | `rgba(255,255,255,0.08)`| `border-white/[0.08]` | Unfocused card borders, table dividers |
-| **Border Active (Neon Pink Glass)** | `rgba(255,42,133,0.4)` | `border-[#FF2A85]/40` | Hovered/selected cards, active input border |
-| **Text Primary (Pure Radiant)** | `#F8FAFC` | `text-slate-100` | Primary values, headings, titles |
-| **Text Secondary (Muted Silver)**| `#94A3B8` | `text-slate-400` | Metric labels, subheaders, units |
-| **Text Monospace (Telemetry)** | `#E2E8F0` | `font-mono text-slate-200` | Live voltages, currents, frequencies, timestamps |
+| Semantic Role | Cyber Dark Token | Dark Hex | High-Contrast Day Token | Day Hex | Semantic Role / Context |
+|---|---|---|---|---|---|
+| **Page Background** | Void Black | `#060709` | Solar Ice Canvas | `#F4F6FB` | Root canvas background, full-screen wrapper |
+| **Card Surface** | Obsidian Dark | `#0B0D13` | Pure White Slate | `#FFFFFF` | Dashboard cards, metric containers, table rows |
+| **Elevated Surface** | Elevated Cyber Glass | `#121622` | Elevated Day Frost | `#EAEFF8` | Modals, slide-over drawers, dropdown menus |
+| **Brand Primary** | Neon Pink | `#FF2A85` | Neon Pink | `#FF2A85` | Main CTA buttons, brand badges, active links |
+| **Primary Glow** | Neon Pink Glow | `rgba(255,42,133,0.35)` | Neon Pink Glow | `rgba(255,42,133,0.25)` | Button glow, card focus ring, active pulse |
+| **Solar PV Power** | Electric Amber | `#FFD600` | Day Solar Amber | `#D97706` | Solar PV generation, irradiance, yield charts |
+| **BESS Storage / SoC** | Laser Cyan | `#00F0FF` | Day BESS Blue | `#0284C7` | Battery storage, SoC gauge, charging flow |
+| **Grid Intertie** | Electric Purple | `#9D4EDD` | Day Grid Violet | `#7C3AED` | Utility grid interconnection, import/export meters |
+| **DG Backup** | Hi-Viz Orange | `#FF6B00` | Day DG Orange | `#EA580C` | Diesel generator, backup power, engine running |
+| **Normal / Online** | Cyber Emerald | `#00E676` | Day Emerald | `#059669` | Plant healthy, telemetry connected, online status |
+| **Warning / Derating**| Vivid Amber | `#FFAB00` | Day Warning Amber| `#D97706` | Derating, minor cell delta-V, string soiling |
+| **Critical Alarm** | Neon Red | `#FF1744` | Day Crimson | `#DC2626` | Tripped contactor, thermal runaway, offline |
+| **Default Border** | Dark Glass | `rgba(255,255,255,0.08)`| Subtle Slate Border | `rgba(15,23,42,0.09)` | Unfocused card borders, table dividers |
+| **Active Card Border**| Neon Pink Glass | `rgba(255,42,133,0.4)` | Neon Pink Glass | `rgba(255,42,133,0.5)` | Hovered/selected cards, active input border |
+| **Text Primary** | Radiant Slate | `#F8FAFC` | Charcoal Monospace | `#0B0F19` | Primary values, headings, titles |
+| **Text Secondary** | Muted Silver | `#94A3B8` | Steel Muted | `#475569` | Metric labels, subheaders, units |
+| **Monospace Telemetry**| Monospace Bright | `#E2E8F0` | Monospace Ink | `#0B0F19` | Live voltages, currents, frequencies, timestamps |
 
 ---
 

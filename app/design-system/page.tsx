@@ -14,6 +14,8 @@ import { MaintenanceCatalogPreview } from "@/components/design-system/maintenanc
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { useTheme } from "@/components/theme/theme-provider";
 import {
   Palette,
   Type,
@@ -23,13 +25,17 @@ import {
   Wrench,
   Search,
   Sparkles,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 export default function DesignSystemPage() {
   const [activeTab, setActiveTab] = useState<string>("tokens");
+  const [tokenViewMode, setTokenViewMode] = useState<"both" | "dark" | "light">("both");
+  const { resolvedTheme } = useTheme();
 
-  // Core Swatches from ui_doc.md Section 1.1
-  const swatches = [
+  // Dark Theme Swatches from ui_doc.md Section 1.1
+  const darkSwatches = [
     {
       name: "Void Black",
       hex: "#060709",
@@ -55,7 +61,7 @@ export default function DesignSystemPage() {
       border: "border border-white/[0.15]",
     },
     {
-      name: "Neon Pink",
+      name: "Neon Pink (Brand)",
       hex: "#FF2A85",
       tailwind: "bg-[#FF2A85] / text-[#FF2A85]",
       role: "Brand Primary CTA, active nav glow, Load node",
@@ -123,6 +129,98 @@ export default function DesignSystemPage() {
       role: "Card active hover border, selected input halo",
       textColor: "text-white",
       glowClass: "glow-border-pink",
+    },
+  ];
+
+  // Cyber Light (Day Mode) Swatches
+  const lightSwatches = [
+    {
+      name: "Solar Ice Canvas",
+      hex: "#F4F6FB",
+      tailwind: "bg-[#F4F6FB]",
+      role: "Page background, root full-screen canvas wrapper",
+      textColor: "text-slate-800",
+      border: "border border-slate-300",
+    },
+    {
+      name: "Pure White Card",
+      hex: "#FFFFFF",
+      tailwind: "bg-white",
+      role: "Dashboard cards, telemetry containers, white slate",
+      textColor: "text-slate-800",
+      border: "border border-slate-200",
+    },
+    {
+      name: "Elevated Day Frost",
+      hex: "#EAEFF8",
+      tailwind: "bg-[#EAEFF8]",
+      role: "Modals, slide-over telemetry drawers, dropdowns",
+      textColor: "text-slate-800",
+      border: "border border-slate-300",
+    },
+    {
+      name: "Neon Pink (Brand)",
+      hex: "#FF2A85",
+      tailwind: "bg-[#FF2A85] / text-[#FF2A85]",
+      role: "Brand Primary CTA, active nav glow, Load node",
+      textColor: "text-white",
+      glowClass: "glow-pink",
+    },
+    {
+      name: "Day Solar Amber",
+      hex: "#D97706",
+      tailwind: "bg-[#D97706] / text-[#D97706]",
+      role: "Solar PV generation, high-contrast outdoor amber",
+      textColor: "text-white",
+    },
+    {
+      name: "Day BESS Sky Blue",
+      hex: "#0284C7",
+      tailwind: "bg-[#0284C7] / text-[#0284C7]",
+      role: "Battery storage, SoC gauge, high sunlight contrast",
+      textColor: "text-white",
+    },
+    {
+      name: "Day Grid Violet",
+      hex: "#7C3AED",
+      tailwind: "bg-[#7C3AED] / text-[#7C3AED]",
+      role: "Utility grid interconnection, import/export meters",
+      textColor: "text-white",
+    },
+    {
+      name: "Day DG Orange",
+      hex: "#EA580C",
+      tailwind: "bg-[#EA580C] / text-[#EA580C]",
+      role: "Diesel generator backup, engine running state",
+      textColor: "text-white",
+    },
+    {
+      name: "Day Emerald Green",
+      hex: "#059669",
+      tailwind: "bg-[#059669] / text-[#059669]",
+      role: "Plant healthy, telemetry connected, online status",
+      textColor: "text-white",
+    },
+    {
+      name: "Day Warning Amber",
+      hex: "#D97706",
+      tailwind: "bg-[#D97706] / text-[#D97706]",
+      role: "Derating, minor cell delta-V, string soiling alert",
+      textColor: "text-white",
+    },
+    {
+      name: "Day Crimson Alarm",
+      hex: "#DC2626",
+      tailwind: "bg-[#DC2626] / text-[#DC2626]",
+      role: "Tripped contactor, thermal runaway, plant offline",
+      textColor: "text-white",
+    },
+    {
+      name: "Charcoal Monospace Ink",
+      hex: "#0B0F19",
+      tailwind: "text-[#0B0F19]",
+      role: "Primary numerical telemetry ink for outdoor readouts",
+      textColor: "text-white",
     },
   ];
 
@@ -199,36 +297,39 @@ export default function DesignSystemPage() {
     <NeonAppShell>
       <div className="space-y-8">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-theme-subtle">
           <div>
             <div className="flex items-center gap-3">
               <div className="size-10 rounded-xl bg-gradient-to-br from-[#FF2A85] to-[#790038] flex items-center justify-center text-white font-black text-xl shadow-[0_0_20px_rgba(255,42,133,0.5)]">
                 ⚡
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white uppercase">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-theme-primary uppercase">
                   Neon Energy Design System
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-                  Industrial Cyber Black Neon / Pink Living Component Specification
+                <p className="text-xs sm:text-sm text-theme-secondary mt-0.5">
+                  Dual-Theme: Industrial Cyber Dark & High-Contrast Cyber Light Day Mode
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#121622] text-[11px] font-mono font-bold text-[#00E676] border border-[#00E676]/30">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Live Interactive Theme Toggle with Label */}
+            <ThemeToggle showLabel className="border-[#FF2A85]/50 shadow-[0_0_12px_rgba(255,42,133,0.25)]" />
+
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-theme-elevated text-[11px] font-mono font-bold text-[#00E676] border border-[#00E676]/30">
               <span className="size-2 rounded-full bg-[#00E676] animate-pulse" />
-              v1.0.0 Production Spec
+              v1.1.0 Dual-Theme
             </span>
-            <span className="px-3 py-1 rounded-full bg-[#FF2A85]/10 text-[11px] font-mono font-bold text-[#FF2A85] border border-[#FF2A85]/30">
-              Zero Light Mode
+            <span className="px-3 py-1 rounded-full bg-[#FF2A85]/15 text-[11px] font-mono font-bold text-[#FF2A85] border border-[#FF2A85]/40 shadow-[0_0_8px_rgba(255,42,133,0.3)]">
+              {resolvedTheme === "dark" ? "Cyber Dark Mode Active" : "Day Light Mode Active"}
             </span>
           </div>
         </div>
 
         {/* Tab Navigation Pill Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-white/[0.06]">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-theme-subtle">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -240,7 +341,7 @@ export default function DesignSystemPage() {
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer select-none min-h-[44px] ${
                   isActive
                     ? "bg-[#FF2A85] text-white shadow-[0_0_15px_rgba(255,42,133,0.45)] border border-[#FF2A85]"
-                    : "bg-[#0B0D13] text-slate-400 hover:text-white hover:bg-[#121622] border border-white/[0.08]"
+                    : "bg-theme-card text-theme-secondary hover:text-theme-primary hover:bg-theme-elevated border border-theme-subtle"
                 }`}
               >
                 <Icon className="size-3.5" />
@@ -253,45 +354,137 @@ export default function DesignSystemPage() {
         {/* TAB CONTENT 1: COLORS & TOKENS */}
         {activeTab === "tokens" && (
           <section className="space-y-6">
-            <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
-                1. Cyberpunk Color Palette & Tokens
-              </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Deep void blacks, obsidian glassmorphism, and radiant neon luminescence optimized for high ambient sunlight legibility.
-              </p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
+                  1. Dual-Theme Color Palettes & Semantic Tokens
+                </h2>
+                <p className="text-xs text-theme-secondary mt-1">
+                  High-contrast palettes engineered for both 24/7 dark control-room operations and intense outdoor sunlight on mobile field devices.
+                </p>
+              </div>
+
+              {/* View filter for tokens */}
+              <div className="flex items-center gap-1.5 p-1 rounded-lg bg-theme-elevated border border-theme-subtle text-xs font-mono">
+                <button
+                  type="button"
+                  onClick={() => setTokenViewMode("both")}
+                  className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+                    tokenViewMode === "both"
+                      ? "bg-[#FF2A85] text-white shadow-sm"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  Both Modes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTokenViewMode("dark")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+                    tokenViewMode === "dark"
+                      ? "bg-[#FF2A85] text-white shadow-sm"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  <Moon className="size-3" /> Dark
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTokenViewMode("light")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+                    tokenViewMode === "light"
+                      ? "bg-[#FF2A85] text-white shadow-sm"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  <Sun className="size-3" /> Light
+                </button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {swatches.map((s) => (
-                <SwatchCard key={s.name} {...s} />
-              ))}
+            {/* Architecture Explainer Card */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-[#0B0D13] border border-white/[0.1] text-slate-100 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2 text-xs font-bold font-mono text-[#00F0FF] uppercase">
+                    <Moon className="size-3.5" /> Cyber Dark Architecture
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.08] text-slate-300">
+                    Control Room & Night
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Deep obsidian surface (<code className="text-[#00F0FF]">#0B0D13</code>) on void black canvas (<code className="text-[#00F0FF]">#060709</code>) eliminates control-room glare and eye fatigue during continuous 24/7 SCADA operations, accented with glowing neon trails.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white border border-slate-200 text-slate-900 space-y-2 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2 text-xs font-bold font-mono text-[#FF2A85] uppercase">
+                    <Sun className="size-3.5" /> High-Contrast Day Light Mode
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                    Outdoor Solar Field
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Crisp solar ice canvas (<code className="text-[#FF2A85]">#F4F6FB</code>) with pure white cards (<code className="text-[#FF2A85]">#FFFFFF</code>) and deep charcoal monospace ink (<code className="text-[#FF2A85]">#0B0F19</code>) delivering WCAG AAA outdoor sunlight legibility.
+                </p>
+              </div>
             </div>
+
+            {/* Dark Mode Swatches */}
+            {(tokenViewMode === "both" || tokenViewMode === "dark") && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold font-mono uppercase tracking-wider text-theme-primary flex items-center gap-2">
+                  <Moon className="size-4 text-[#00F0FF]" /> Cyber Dark Token Swatches
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {darkSwatches.map((s) => (
+                    <SwatchCard key={`dark-${s.name}`} {...s} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Light Mode Swatches */}
+            {(tokenViewMode === "both" || tokenViewMode === "light") && (
+              <div className="space-y-3 pt-4 border-t border-theme-subtle">
+                <h3 className="text-sm font-bold font-mono uppercase tracking-wider text-theme-primary flex items-center gap-2">
+                  <Sun className="size-4 text-[#FFAB00]" /> Cyber Light (Day Mode) Token Swatches
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {lightSwatches.map((s) => (
+                    <SwatchCard key={`light-${s.name}`} {...s} />
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Custom Glow Utilities Demonstration */}
-            <div className="rounded-xl bg-[#0B0D13] border border-white/[0.08] p-5 space-y-4">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <div className="rounded-xl bg-theme-card border border-theme-subtle p-5 space-y-4 shadow-sm">
+              <h3 className="text-sm font-bold text-theme-primary uppercase tracking-wider">
                 Glow Shadow Utilities
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-[#121622] border border-[#FF2A85]/50 glow-pink text-center">
+                <div className="p-4 rounded-xl bg-theme-elevated border border-[#FF2A85]/50 glow-pink text-center">
                   <div className="text-xs font-mono font-bold text-[#FF2A85]">.glow-pink</div>
-                  <div className="text-[10px] text-slate-400 mt-1">Brand CTA & Load Node</div>
+                  <div className="text-[10px] text-theme-secondary mt-1">Brand CTA & Load Node</div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#121622] border border-[#00F0FF]/50 glow-cyan text-center">
+                <div className="p-4 rounded-xl bg-theme-elevated border border-[#00F0FF]/50 glow-cyan text-center">
                   <div className="text-xs font-mono font-bold text-[#00F0FF]">.glow-cyan</div>
-                  <div className="text-[10px] text-slate-400 mt-1">BESS Storage & SoC</div>
+                  <div className="text-[10px] text-theme-secondary mt-1">BESS Storage & SoC</div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#121622] border border-[#FFD600]/50 glow-yellow text-center">
+                <div className="p-4 rounded-xl bg-theme-elevated border border-[#FFD600]/50 glow-yellow text-center">
                   <div className="text-xs font-mono font-bold text-[#FFD600]">.glow-yellow</div>
-                  <div className="text-[10px] text-slate-400 mt-1">Solar PV Generation</div>
+                  <div className="text-[10px] text-theme-secondary mt-1">Solar PV Generation</div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#121622] glow-border-pink text-center">
-                  <div className="text-xs font-mono font-bold text-white">.glow-border-pink</div>
-                  <div className="text-[10px] text-slate-400 mt-1">Selected Card Inset Ring</div>
+                <div className="p-4 rounded-xl bg-theme-elevated glow-border-pink text-center">
+                  <div className="text-xs font-mono font-bold text-theme-primary">.glow-border-pink</div>
+                  <div className="text-[10px] text-theme-secondary mt-1">Selected Card Inset Ring</div>
                 </div>
               </div>
             </div>
@@ -302,72 +495,72 @@ export default function DesignSystemPage() {
         {activeTab === "typography" && (
           <section className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
+              <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
                 2. Typography & Monospace Precision Rules
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                To convey industrial control-room legibility, all electrical metrics (<code className="text-[#FF2A85]">kW, MW, V, A, Hz, %, kWh, °C</code>) strictly adhere to <code className="text-[#00F0FF]">font-mono</code>.
+              <p className="text-xs text-theme-secondary mt-1">
+                To convey industrial control-room legibility, all electrical metrics (<code className="text-[#FF2A85]">kW, MW, V, A, Hz, %, kWh, °C</code>) strictly adhere to <code className="text-[#00F0FF]">font-mono</code> in both dark and light modes.
               </p>
             </div>
 
-            <div className="rounded-xl bg-[#0B0D13] border border-white/[0.08] divide-y divide-white/[0.06]">
+            <div className="rounded-xl bg-theme-card border border-theme-subtle divide-y divide-theme-subtle shadow-sm">
               <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div className="w-56 text-xs text-slate-400 uppercase font-semibold">
+                <div className="w-56 text-xs text-theme-secondary uppercase font-semibold">
                   Fleet KPI Mega Value
                 </div>
-                <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white">
-                  3,420.5 <span className="text-sm font-normal text-slate-400">kW</span>
+                <div className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-theme-primary">
+                  3,420.5 <span className="text-sm font-normal text-theme-secondary">kW</span>
                 </div>
-                <code className="text-[10px] font-mono text-slate-500 bg-[#121622] px-2 py-1 rounded">
-                  text-3xl font-black font-mono tracking-tight text-white
+                <code className="text-[10px] font-mono text-theme-secondary bg-theme-elevated px-2 py-1 rounded border border-theme-subtle">
+                  text-3xl font-black font-mono tracking-tight text-theme-primary
                 </code>
               </div>
 
               <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div className="w-56 text-xs text-slate-400 uppercase font-semibold">
+                <div className="w-56 text-xs text-theme-secondary uppercase font-semibold">
                   Card Telemetry Value
                 </div>
-                <div className="text-xl sm:text-2xl font-bold font-mono text-white">
-                  84.2% <span className="text-xs font-normal text-slate-400">SoC</span>
+                <div className="text-xl sm:text-2xl font-bold font-mono text-theme-primary">
+                  84.2% <span className="text-xs font-normal text-theme-secondary">SoC</span>
                 </div>
-                <code className="text-[10px] font-mono text-slate-500 bg-[#121622] px-2 py-1 rounded">
-                  text-2xl font-bold font-mono text-white
+                <code className="text-[10px] font-mono text-theme-secondary bg-theme-elevated px-2 py-1 rounded border border-theme-subtle">
+                  text-2xl font-bold font-mono text-theme-primary
                 </code>
               </div>
 
               <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div className="w-56 text-xs text-slate-400 uppercase font-semibold">
+                <div className="w-56 text-xs text-theme-secondary uppercase font-semibold">
                   Secondary Readout
                 </div>
-                <div className="text-sm sm:text-base font-semibold font-mono text-slate-300">
+                <div className="text-sm sm:text-base font-semibold font-mono text-theme-primary">
                   50.02 Hz • 415.2 V • 0.98 PF
                 </div>
-                <code className="text-[10px] font-mono text-slate-500 bg-[#121622] px-2 py-1 rounded">
-                  text-base font-semibold font-mono text-slate-300
+                <code className="text-[10px] font-mono text-theme-secondary bg-theme-elevated px-2 py-1 rounded border border-theme-subtle">
+                  text-base font-semibold font-mono text-theme-primary
                 </code>
               </div>
 
               <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div className="w-56 text-xs text-slate-400 uppercase font-semibold">
+                <div className="w-56 text-xs text-theme-secondary uppercase font-semibold">
                   Section Heading
                 </div>
-                <div className="text-base sm:text-lg font-bold text-white tracking-tight uppercase">
+                <div className="text-base sm:text-lg font-bold text-theme-primary tracking-tight uppercase">
                   BESS BMS Rack 01 Thermal Gradient
                 </div>
-                <code className="text-[10px] font-mono text-slate-500 bg-[#121622] px-2 py-1 rounded">
-                  text-lg font-bold text-white uppercase tracking-tight
+                <code className="text-[10px] font-mono text-theme-secondary bg-theme-elevated px-2 py-1 rounded border border-theme-subtle">
+                  text-lg font-bold text-theme-primary uppercase tracking-tight
                 </code>
               </div>
 
               <div className="p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-2">
-                <div className="w-56 text-xs text-slate-400 uppercase font-semibold">
+                <div className="w-56 text-xs text-theme-secondary uppercase font-semibold">
                   Field / Unit Label
                 </div>
-                <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-theme-secondary">
                   Instantaneous Active Generation
                 </div>
-                <code className="text-[10px] font-mono text-slate-500 bg-[#121622] px-2 py-1 rounded">
-                  text-xs font-semibold uppercase tracking-wider text-slate-400
+                <code className="text-[10px] font-mono text-theme-secondary bg-theme-elevated px-2 py-1 rounded border border-theme-subtle">
+                  text-xs font-semibold uppercase tracking-wider text-theme-secondary
                 </code>
               </div>
             </div>
@@ -378,18 +571,18 @@ export default function DesignSystemPage() {
         {activeTab === "controls" && (
           <section className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
+              <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
                 3. Buttons, Badges & Form Controls
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                Touch-safe ergonomic primitives with minimum 44px mobile height and glowing active states.
+              <p className="text-xs text-theme-secondary mt-1">
+                Touch-safe ergonomic primitives with minimum 44px mobile height, glowing active states, and full theme reactivity.
               </p>
             </div>
 
-            <div className="rounded-xl bg-[#0B0D13] border border-white/[0.08] p-5 space-y-6">
+            <div className="rounded-xl bg-theme-card border border-theme-subtle p-5 space-y-6 shadow-sm">
               {/* Button Variants */}
               <div className="space-y-3">
-                <h3 className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+                <h3 className="text-xs uppercase font-bold text-theme-secondary tracking-wider">
                   Button Variants
                 </h3>
                 <div className="flex flex-wrap items-center gap-3">
@@ -402,8 +595,8 @@ export default function DesignSystemPage() {
               </div>
 
               {/* Status Badges */}
-              <div className="space-y-3 pt-4 border-t border-white/[0.06]">
-                <h3 className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+              <div className="space-y-3 pt-4 border-t border-theme-subtle">
+                <h3 className="text-xs uppercase font-bold text-theme-secondary tracking-wider">
                   Status & Asset Badges
                 </h3>
                 <div className="flex flex-wrap items-center gap-3">
@@ -421,8 +614,8 @@ export default function DesignSystemPage() {
               </div>
 
               {/* Input Fields */}
-              <div className="space-y-3 pt-4 border-t border-white/[0.06] max-w-xl">
-                <h3 className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+              <div className="space-y-3 pt-4 border-t border-theme-subtle max-w-xl">
+                <h3 className="text-xs uppercase font-bold text-theme-secondary tracking-wider">
                   Search & Form Input Controls
                 </h3>
                 <Input
@@ -442,17 +635,17 @@ export default function DesignSystemPage() {
         {activeTab === "fleet" && (
           <section className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
+              <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
                 4. Fleet Aggregate Strip & Site Cockpit Cards
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                The 5-metric glowing fleet aggregate strip and obsidian site cards from Screen 1.
+              <p className="text-xs text-theme-secondary mt-1">
+                The 5-metric glowing fleet aggregate strip and responsive site cards reacting smoothly to the active theme.
               </p>
             </div>
 
             {/* 5-Metric Strip */}
             <div className="space-y-3">
-              <h3 className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+              <h3 className="text-xs uppercase font-bold text-theme-secondary tracking-wider">
                 Fleet 5-Metric Aggregation Strip
               </h3>
               <FleetAggregateStrip />
@@ -460,7 +653,7 @@ export default function DesignSystemPage() {
 
             {/* Site Cards Grid */}
             <div className="space-y-3 pt-4">
-              <h3 className="text-xs uppercase font-bold text-slate-400 tracking-wider">
+              <h3 className="text-xs uppercase font-bold text-theme-secondary tracking-wider">
                 Site Cockpit Card Grid
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -476,10 +669,10 @@ export default function DesignSystemPage() {
         {activeTab === "flow" && (
           <section className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
+              <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
                 5. 5-Node Interactive Energy Flow Visualizer
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-theme-secondary mt-1">
                 Animated electrical power transfer canvas connecting Solar PV, BESS, Grid, DG, and Facility Load.
               </p>
             </div>
@@ -492,10 +685,10 @@ export default function DesignSystemPage() {
         {activeTab === "telemetry" && (
           <section className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
+              <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
                 6. Component Telemetry Drawers & Heatmaps
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-theme-secondary mt-1">
                 16-cell BESS thermal heatmap matrix, cell delta-V indicator, and Solar MPPT string current table.
               </p>
             </div>
@@ -508,10 +701,10 @@ export default function DesignSystemPage() {
         {activeTab === "maintenance" && (
           <section className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-white uppercase tracking-tight">
+              <h2 className="text-lg font-bold text-theme-primary uppercase tracking-tight">
                 7. Certified Solar & BESS Maintenance Engine
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-theme-secondary mt-1">
                 Specialized service catalog packages exclusively for Solar PV and BESS assets, with 4-step scheduling wizard.
               </p>
             </div>
