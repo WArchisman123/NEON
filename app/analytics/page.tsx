@@ -43,10 +43,10 @@ export default async function AnalyticsPage({ searchParams }: Props) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="text-[11px] font-mono uppercase tracking-wider text-[#FF2A85] font-bold">
-              Feature Spec 3 • Industrial Energy Balance &amp; Yield Analytics
+              Industrial Energy Balance • Inverter, Grid MFM &amp; DG Reports
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-theme-primary tracking-tight mt-0.5">
-              Power Consumption &amp; Plant Comparative Analytics
+              Plant Yield &amp; Generation Analytics
             </h1>
           </div>
         </div>

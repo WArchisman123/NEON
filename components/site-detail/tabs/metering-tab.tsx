@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { ArrowUpRight, FileSpreadsheet } from "lucide-react";
 import { SiteRecord } from "@/lib/energy/types";
 import { normalizeEdgeTelemetry } from "@/lib/energy/edge-telemetry-adapter";
 import { LiveMetering3PhaseTable } from "@/components/metering/live-metering-3phase-table";
@@ -81,6 +83,31 @@ export function MeteringTab({ site }: MeteringTabProps) {
 
       {/* Row 3: 4-Channel DC MPPT String Telemetry */}
       <MpptStringTelemetryCard metrics={edgeMetrics} />
+
+      {/* Row 4: Dedicated Grid MFM Export Report Link */}
+      <div className="p-3.5 rounded-xl bg-theme-card border border-[#9D4EDD]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-2.5">
+          <div className="size-8 rounded-lg bg-purple-500/10 text-[#9D4EDD] flex items-center justify-center">
+            <FileSpreadsheet className="size-4" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-theme-primary uppercase">
+              Grid MFM Export &amp; Revenue Reports
+            </h4>
+            <p className="text-[10px] text-theme-muted">
+              Inspect historical date-wise, monthly, and yearly net metering export ledger
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href={`/analytics?siteId=${site.id}`}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#9D4EDD]/20 hover:bg-[#9D4EDD]/30 text-[#9D4EDD] border border-[#9D4EDD]/40 text-xs font-bold transition-all self-start sm:self-auto"
+        >
+          <span>Open Yield &amp; MFM Reports</span>
+          <ArrowUpRight className="size-3.5" />
+        </Link>
+      </div>
     </div>
   );
 }

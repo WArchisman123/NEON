@@ -7,10 +7,12 @@ import {
   Layers,
   Building,
   ChevronDown,
+  FileSpreadsheet,
 } from "lucide-react";
 import { SiteRecord, HourlyTelemetryRecord } from "@/lib/energy/types";
 import { PowerConsumptionWorkspace } from "./power-consumption-workspace";
 import { PlantGenerationComparativeHub } from "./plant-generation-comparative-hub";
+import { YieldReportsHub } from "./yield-reports-hub";
 
 interface AnalyticsMasterContainerProps {
   sites: SiteRecord[];
@@ -25,7 +27,7 @@ export function AnalyticsMasterContainer({
 }: AnalyticsMasterContainerProps) {
   const router = useRouter();
   const [selectedSiteId, setSelectedSiteId] = useState<string>(initialSiteId);
-  const [analyticsMode, setAnalyticsMode] = useState<"dispatch" | "comparative">("dispatch");
+  const [analyticsMode, setAnalyticsMode] = useState<"dispatch" | "comparative" | "reports">("reports");
 
   const currentSite = useMemo(() => {
     return sites.find((s) => s.id === selectedSiteId) || sites[0];
@@ -39,7 +41,7 @@ export function AnalyticsMasterContainer({
   return (
     <div className="space-y-6">
       {/* Top Controls Bar: Site Selector & Mode Switcher */}
-      <div className="rounded-xl bg-theme-card border border-theme-subtle p-3 sm:p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3 font-mono text-xs">
+      <div className="rounded-xl bg-theme-card border border-theme-subtle p-3 sm:p-4 shadow-lg flex flex-col xl:flex-row xl:items-center justify-between gap-3 font-mono text-xs">
         {/* Site Selector Dropdown */}
         <div className="flex items-center gap-2">
           <span className="text-theme-muted flex items-center gap-1.5 font-bold">
@@ -62,8 +64,20 @@ export function AnalyticsMasterContainer({
           </div>
         </div>
 
-        {/* Analytics Workspace Mode Switcher */}
-        <div className="flex rounded-lg bg-theme-muted p-1 border border-theme-subtle">
+        {/* Analytics Workspace Mode Switcher (3 Modes) */}
+        <div className="flex flex-wrap rounded-lg bg-theme-muted p-1 border border-theme-subtle">
+          <button
+            onClick={() => setAnalyticsMode("reports")}
+            className={`px-3 py-1.5 rounded-md font-bold transition-all flex items-center gap-1.5 min-h-[36px] ${
+              analyticsMode === "reports"
+                ? "bg-[#FF2A85] text-white shadow-[0_0_12px_rgba(255,42,133,0.35)]"
+                : "text-theme-muted hover:text-theme-primary"
+            }`}
+          >
+            <FileSpreadsheet className="size-3.5 text-[#FFD600]" />
+            <span>📑 Yield &amp; Generation Reports</span>
+          </button>
+
           <button
             onClick={() => setAnalyticsMode("dispatch")}
             className={`px-3 py-1.5 rounded-md font-bold transition-all flex items-center gap-1.5 min-h-[36px] ${
@@ -73,7 +87,7 @@ export function AnalyticsMasterContainer({
             }`}
           >
             <Activity className="size-3.5" />
-            <span>⚡ Power Mix &amp; Dispatch Balance</span>
+            <span>⚡ Power Mix &amp; Dispatch</span>
           </button>
 
           <button
@@ -85,19 +99,25 @@ export function AnalyticsMasterContainer({
             }`}
           >
             <Layers className="size-3.5 text-[#00F0FF]" />
-            <span>📈 Plant Generation Comparative &amp; 4-Quadrant</span>
+            <span>📈 Plant Comparative</span>
           </button>
         </div>
       </div>
 
       {/* RENDER ACTIVE MODE */}
-      {analyticsMode === "dispatch" ? (
+      {analyticsMode === "reports" && (
+        <YieldReportsHub site={currentSite} />
+      )}
+
+      {analyticsMode === "dispatch" && (
         <PowerConsumptionWorkspace
           site={currentSite}
           sites={sites}
           hourlyTelemetry={hourlyTelemetry}
         />
-      ) : (
+      )}
+
+      {analyticsMode === "comparative" && (
         <PlantGenerationComparativeHub site={currentSite} />
       )}
     </div>
