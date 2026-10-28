@@ -170,36 +170,6 @@ export function DashboardTab({ site }: DashboardTabProps) {
   return (
     <div className="flex flex-col gap-3.5 w-full font-mono animate-in fade-in-50 duration-200">
       {/* =========================================================================
-          PHASE 1 UPGRADE: Dedicated Company Branding, Logo Slot & Site Header
-          ========================================================================= */}
-      <CompanyBrandingBanner
-        site={site}
-        companyName={clerkOrg?.name || "iRasus Technologies"}
-        logoUrl={clerkOrg?.imageUrl || null}
-      />
-
-      {/* =========================================================================
-          PHASE 1 UPGRADE: Annual Target Progress & Solar Generation Revenue (₹)
-          ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
-        <AnnualTargetCard site={site} className="h-full" />
-        <SolarRevenueCard site={site} className="h-full" />
-      </div>
-
-      {/* =========================================================================
-          PHASE 1 UPGRADE: 3-Source Energy Yield Matrix (Solar, Grid, DG in kWh)
-          ========================================================================= */}
-      <ThreeSourceYieldCard site={site} />
-
-      {/* =========================================================================
-          PHASE 1 UPGRADE: Inverter-Wise kW Breakdown & Inverter Alarm Supervisor
-          ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
-        <InverterBreakdownCard site={site} className="h-full" />
-        <InverterAlarmCard site={site} className="h-full" />
-      </div>
-
-      {/* =========================================================================
           1. Top Financial & TOU Arbitrage Strip (8 Compact Cards)
           ========================================================================= */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
@@ -382,11 +352,41 @@ export function DashboardTab({ site }: DashboardTabProps) {
       </div>
 
       {/* =========================================================================
-          4. Bottom Analytical Waveforms: System Voltage & Load vs. Current Draw
+          4. Analytical Waveforms: System Voltage & Load vs. Current Draw
           ========================================================================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 pb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5">
         <SystemVoltageChart currentVoltage={489.6} />
         <LoadVsCurrentChart currentA={-151.7} loadKw={112.4} />
+      </div>
+
+      {/* =========================================================================
+          5. Company Branding, Partner Logo Slot & Generation Status Banner
+          ========================================================================= */}
+      <CompanyBrandingBanner
+        site={site}
+        companyName={clerkOrg?.name || "iRasus Technologies"}
+        logoUrl={clerkOrg?.imageUrl || null}
+      />
+
+      {/* =========================================================================
+          6. Annual Target Progress Dial & Solar Generation Revenue (₹ INR)
+          ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
+        <AnnualTargetCard site={site} className="h-full" />
+        <SolarRevenueCard site={site} className="h-full" />
+      </div>
+
+      {/* =========================================================================
+          7. 3-Source Energy Yield Matrix (Solar PV, Grid MFM, DG in kWh & kW)
+          ========================================================================= */}
+      <ThreeSourceYieldCard site={site} />
+
+      {/* =========================================================================
+          8. Inverter-Wise kW Breakdown & Inverter Alarm Protection Supervisor
+          ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch pb-4">
+        <InverterBreakdownCard site={site} className="h-full" />
+        <InverterAlarmCard site={site} className="h-full" />
       </div>
     </div>
   );
