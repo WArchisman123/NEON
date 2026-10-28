@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useOrganization } from "@clerk/nextjs";
 import {
   Activity,
   Shield,
@@ -24,12 +25,20 @@ import { SiteRecord } from "@/lib/energy/types";
 import { SystemTopologyVisualizer } from "@/components/energy-flow/system-topology-visualizer";
 import { SystemVoltageChart } from "@/components/site-detail/charts/system-voltage-chart";
 import { LoadVsCurrentChart } from "@/components/site-detail/charts/load-vs-current-chart";
+import { CompanyBrandingBanner } from "@/components/site-detail/dashboard/company-branding-banner";
+import { AnnualTargetCard } from "@/components/site-detail/dashboard/annual-target-card";
+import { ThreeSourceYieldCard } from "@/components/site-detail/dashboard/three-source-yield-card";
+import { SolarRevenueCard } from "@/components/site-detail/dashboard/solar-revenue-card";
+import { InverterBreakdownCard } from "@/components/site-detail/dashboard/inverter-breakdown-card";
+import { InverterAlarmCard } from "@/components/site-detail/dashboard/inverter-alarm-card";
 
 interface DashboardTabProps {
   site: SiteRecord;
 }
 
 export function DashboardTab({ site }: DashboardTabProps) {
+  const { organization: clerkOrg } = useOrganization();
+
   // Top 8 Financial Cards matching 01_dashboard_overview_financial.png
   const financialCards = [
     {
@@ -159,7 +168,37 @@ export function DashboardTab({ site }: DashboardTabProps) {
   ];
 
   return (
-    <div className="flex flex-col gap-2.5 w-full font-mono animate-in fade-in-50 duration-200">
+    <div className="flex flex-col gap-3.5 w-full font-mono animate-in fade-in-50 duration-200">
+      {/* =========================================================================
+          PHASE 1 UPGRADE: Dedicated Company Branding, Logo Slot & Site Header
+          ========================================================================= */}
+      <CompanyBrandingBanner
+        site={site}
+        companyName={clerkOrg?.name || "iRasus Technologies"}
+        logoUrl={clerkOrg?.imageUrl || null}
+      />
+
+      {/* =========================================================================
+          PHASE 1 UPGRADE: Annual Target Progress & Solar Generation Revenue (₹)
+          ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
+        <AnnualTargetCard site={site} className="h-full" />
+        <SolarRevenueCard site={site} className="h-full" />
+      </div>
+
+      {/* =========================================================================
+          PHASE 1 UPGRADE: 3-Source Energy Yield Matrix (Solar, Grid, DG in kWh)
+          ========================================================================= */}
+      <ThreeSourceYieldCard site={site} />
+
+      {/* =========================================================================
+          PHASE 1 UPGRADE: Inverter-Wise kW Breakdown & Inverter Alarm Supervisor
+          ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-stretch">
+        <InverterBreakdownCard site={site} className="h-full" />
+        <InverterAlarmCard site={site} className="h-full" />
+      </div>
+
       {/* =========================================================================
           1. Top Financial & TOU Arbitrage Strip (8 Compact Cards)
           ========================================================================= */}
