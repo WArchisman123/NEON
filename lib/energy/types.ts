@@ -29,6 +29,7 @@ export interface SiteRecord {
   dg_power_kw?: number;
   load_power_kw?: number;
   bess_soc_pct?: number;
+  bess_soh_pct?: number;
   dg_fuel_pct?: number;
   dg_running?: boolean;
   solar_yield_today_kwh?: number;
@@ -56,6 +57,45 @@ export interface SiteRecord {
   peak_irradiance_time?: string;
   pv_dg_fuel_saved_liters?: number;
   pv_dg_fuel_saved_kwh?: number;
+  // Edge Device Ingested Telemetry
+  edge_telemetry?: EdgeDeviceTelemetry;
+}
+
+export interface EdgeDeviceTelemetry {
+  "DayActive PowerWh": number;
+  "DayReactive PowerWh": number;
+  "Total_Active_PowerWh": number;
+  "Total Reactive PowerWh": number;
+  "Total Work time": number;
+  "inverter efficiency": number;
+  "Grid voltage AB": number;
+  "Grid voltage BC": number;
+  "Grid voltage AC": number;
+  "Grid voltage A": number;
+  "Grid current A": number;
+  "Grid frequency": number;
+  "Input active power": number;
+  "output apparent power": number;
+  "Output active power": number;
+  "Output reactive power": number;
+  "power factor": number;
+  "historyPV PowerWh": number;
+  "Day PV PowerWh": number;
+  "Dc voltage 1": number;
+  "Dc current 1": number;
+  "Dc voltage 2": number;
+  "Dc current 2": number;
+  "Dc voltage 3": number;
+  "Dc current 3": number;
+  "Dc voltage 4": number;
+  "Dc current 4": number;
+  "Day Load Power Wh": number;
+  "history Load Power": number;
+  "Meter active power": number;
+  "Day GridSell Power Wh": number;
+  "history GridSell_Power": number;
+  "Day GridBuy Power Wh": number;
+  "history GridBuy Power": number;
 }
 
 export interface SiteDeviceRecord {

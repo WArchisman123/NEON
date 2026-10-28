@@ -4,18 +4,51 @@ import React from "react";
 import Link from "next/link";
 import { UserButton, OrganizationSwitcher, useAuth, useOrganization } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { Bell, UserPlus } from "lucide-react";
+import { Bell, UserPlus, LayoutGrid } from "lucide-react";
 import { InviteTeamDialog } from "@/components/layout/invite-team-dialog";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { useTheme } from "@/components/theme/theme-provider";
+import { SiteSwitcher } from "@/components/layout/site-switcher";
+import { SiteRecord } from "@/lib/energy/types";
 
 const MASTER_ORG_ID = "org_3JgZ51s2g9LkRRE0L61kAXDGDWE";
 
-export function Topbar() {
+interface TopbarProps {
+  sites?: SiteRecord[];
+  activeSiteId?: string;
+  onSelectSite?: (siteId: string) => void;
+}
+
+export function Topbar({
+  sites: propSites,
+  activeSiteId,
+  onSelectSite,
+}: TopbarProps = {}) {
   const { orgId } = useAuth();
   const { organization } = useOrganization();
   const { resolvedTheme } = useTheme();
   const [isInviteOpen, setIsInviteOpen] = React.useState(false);
+  const [fetchedSites, setFetchedSites] = React.useState<SiteRecord[]>([]);
+
+  // If sites not passed via SSR props, fetch client-side from /api/v1/sites
+  React.useEffect(() => {
+    if (!propSites || propSites.length === 0) {
+      let isMounted = true;
+      fetch("/api/v1/sites")
+        .then((res) => (res.ok ? res.json() : Promise.reject()))
+        .then((data) => {
+          if (isMounted && data?.sites && Array.isArray(data.sites)) {
+            setFetchedSites(data.sites);
+          }
+        })
+        .catch(() => {});
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [propSites]);
+
+  const siteList = propSites && propSites.length > 0 ? propSites : fetchedSites;
 
   const isDark = resolvedTheme !== "light";
 
@@ -136,10 +169,40 @@ export function Topbar() {
             </div>
           )}
         </div>
+
+        {/* Site Switcher Dropdown */}
+        {siteList.length > 0 && (
+          <SiteSwitcher
+            sites={siteList}
+            activeSiteId={activeSiteId}
+            onSelectSite={onSelectSite}
+            className="hidden md:block"
+          />
+        )}
       </div>
 
-      {/* Right: Theme Toggle, Invite, Alerts & Clerk UserButton */}
+      {/* Center: Mobile Site Switcher if on narrow screens */}
+      {siteList.length > 0 && (
+        <div className="md:hidden flex-1 max-w-[180px] px-1">
+          <SiteSwitcher
+            sites={siteList}
+            activeSiteId={activeSiteId}
+            onSelectSite={onSelectSite}
+          />
+        </div>
+      )}
+
+      {/* Right: Theme Toggle, Fleet Cockpit, Invite, Alerts & Clerk UserButton */}
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Fleet Cockpit Link */}
+        <Link
+          href="/fleet"
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-theme-elevated hover:bg-theme-card border border-theme-subtle hover:border-[#FF2A85]/50 text-xs font-mono font-semibold text-theme-secondary hover:text-[#FF2A85] transition-all min-h-[36px]"
+          title="Fleet Cockpit Multi-Site Overview"
+        >
+          <LayoutGrid className="size-3.5 text-theme-secondary" />
+          <span>Fleet</span>
+        </Link>
         {/* Dual-Theme Switcher */}
         <ThemeToggle />
 

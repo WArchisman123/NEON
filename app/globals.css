@@ -467,7 +467,8 @@ input[type="password"] {
   }
 }
 
-.animate-flow-forward {
+.animate-flow-forward,
+.animate-conduit-flow {
   animation: flowForward 1.2s linear infinite;
 }
 

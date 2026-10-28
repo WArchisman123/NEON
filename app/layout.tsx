@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { AuthSyncListener } from "@/components/auth/auth-sync-listener";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -149,7 +150,10 @@ export default async function RootLayout({
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         </head>
         <body className="min-h-full flex flex-col bg-theme-canvas text-theme-primary transition-colors duration-200">
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <AuthSyncListener />
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

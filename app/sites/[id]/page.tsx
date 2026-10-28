@@ -2,11 +2,12 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NeonAppShell } from "@/components/layout/neon-app-shell";
-import { SiteDetailView } from "@/components/site-detail/site-detail-view";
+import { SingleSiteEmsView } from "@/components/site-detail/single-site-ems-view";
 import {
   getOrCreateOrg,
   getSiteDetails,
   getSiteHourlyAnalytics,
+  getSitesForOrg,
 } from "@/lib/energy/site-service";
 
 interface Props {
@@ -24,7 +25,10 @@ export default async function SiteDetailPage({ params }: Props) {
 
   await getOrCreateOrg(effectiveOrgId, orgName);
 
-  const siteData = await getSiteDetails(effectiveOrgId, siteId);
+  const [siteData, sites] = await Promise.all([
+    getSiteDetails(effectiveOrgId, siteId),
+    getSitesForOrg(effectiveOrgId),
+  ]);
 
   if (!siteData) {
     return notFound();
@@ -34,9 +38,10 @@ export default async function SiteDetailPage({ params }: Props) {
   const hourlyTelemetry = await getSiteHourlyAnalytics(site.id, "30d");
 
   return (
-    <NeonAppShell>
-      <SiteDetailView
+    <NeonAppShell sites={sites} activeSiteId={site.id}>
+      <SingleSiteEmsView
         site={site}
+        sites={sites}
         devices={devices}
         hourlyTelemetry={hourlyTelemetry}
       />
