@@ -22,6 +22,269 @@ interface SystemTopologyVisualizerProps {
   className?: string;
 }
 
+/* ==========================================================================
+   High-Definition 3D Isometric Asset Vector Components
+   ========================================================================== */
+
+function SolarArrayVector({ isActive = true }: { isActive?: boolean }) {
+  return (
+    <svg viewBox="0 0 70 54" className="w-full h-full drop-shadow-md overflow-visible">
+      <defs>
+        <linearGradient id="solar-panel-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0284C7" />
+          <stop offset="50%" stopColor="#0369A1" />
+          <stop offset="100%" stopColor="#0B132B" />
+        </linearGradient>
+        <linearGradient id="solar-glint" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.5" />
+          <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+
+      {/* Racking Leg Stands */}
+      <line x1="16" y1="36" x2="16" y2="47" stroke="#64748B" strokeWidth="2" strokeLinecap="round" />
+      <line x1="36" y1="46" x2="36" y2="52" stroke="#64748B" strokeWidth="2" strokeLinecap="round" />
+      <line x1="54" y1="36" x2="54" y2="47" stroke="#64748B" strokeWidth="2" strokeLinecap="round" />
+      <line x1="16" y1="47" x2="36" y2="52" stroke="#475569" strokeWidth="1.2" />
+      <line x1="54" y1="47" x2="36" y2="52" stroke="#475569" strokeWidth="1.2" />
+
+      {/* Combiner / Inverter Box at rack */}
+      <polygon points="48,39 56,35 56,43 48,47" fill="#1E293B" stroke="#64748B" strokeWidth="0.8" />
+      <circle cx="52" cy="41" r="1.2" fill={isActive ? "#00E676" : "#64748B"} />
+
+      {/* Main 3D Photovoltaic Surface (Upper Isometric Plane) */}
+      <polygon
+        points="35,6 64,22 35,38 6,22"
+        fill="url(#solar-panel-grad)"
+        stroke="#FFD600"
+        strokeWidth="1.2"
+      />
+
+      {/* Glass Panel Frame & Thickness */}
+      <polygon points="6,22 35,38 35,41 6,25" fill="#334155" />
+      <polygon points="35,38 64,22 64,25 35,41" fill="#1E293B" />
+
+      {/* Grid Sub-arrays (Wafer Dividers) */}
+      <line x1="20" y1="14" x2="49" y2="30" stroke="#38BDF8" strokeWidth="0.7" strokeOpacity="0.8" />
+      <line x1="35" y1="6" x2="35" y2="38" stroke="#38BDF8" strokeWidth="0.8" strokeOpacity="0.8" />
+      <line x1="50" y1="14" x2="21" y2="30" stroke="#38BDF8" strokeWidth="0.7" strokeOpacity="0.8" />
+
+      {/* Silver Busbars */}
+      <line x1="13" y1="18" x2="42" y2="34" stroke="#E2E8F0" strokeWidth="0.5" strokeDasharray="3 2" />
+      <line x1="27" y1="10" x2="56" y2="26" stroke="#E2E8F0" strokeWidth="0.5" strokeDasharray="3 2" />
+
+      {/* Solar Glint Reflection */}
+      <polygon points="20,10 32,7 48,26 36,29" fill="url(#solar-glint)" />
+    </svg>
+  );
+}
+
+function PcsCabinetVector({ isCharging = false }: { isCharging?: boolean }) {
+  return (
+    <svg viewBox="0 0 70 54" className="w-full h-full drop-shadow-md overflow-visible">
+      <defs>
+        <linearGradient id="pcs-roof-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#64748B" />
+          <stop offset="100%" stopColor="#334155" />
+        </linearGradient>
+        <linearGradient id="pcs-side-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#1E293B" />
+          <stop offset="100%" stopColor="#0B132B" />
+        </linearGradient>
+        <linearGradient id="pcs-front-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#334155" />
+          <stop offset="100%" stopColor="#1E293B" />
+        </linearGradient>
+      </defs>
+
+      {/* Concrete Base Plinth */}
+      <polygon points="12,39 35,27 58,39 35,51" fill="#1E293B" stroke="#475569" strokeWidth="0.75" />
+
+      {/* Cabinet Body - Left/Front Face */}
+      <polygon points="15,16 35,26 35,46 15,36" fill="url(#pcs-front-grad)" stroke="#475569" strokeWidth="0.8" />
+
+      {/* Cabinet Body - Right/Side Face */}
+      <polygon points="35,26 55,16 55,36 35,46" fill="url(#pcs-side-grad)" stroke="#475569" strokeWidth="0.8" />
+
+      {/* Overhanging Roof (Top Isometric Plane) */}
+      <polygon points="13,15 35,4 57,15 35,26" fill="url(#pcs-roof-grad)" stroke="#38BDF8" strokeWidth="1" />
+
+      {/* Left Face - Horizontal Air Louvers */}
+      <line x1="19" y1="28" x2="31" y2="34" stroke="#94A3B8" strokeWidth="1" />
+      <line x1="19" y1="32" x2="31" y2="38" stroke="#94A3B8" strokeWidth="1" />
+
+      {/* Right Face - Digital HMI Display Screen */}
+      <polygon points="39,24 51,18 51,28 39,34" fill="#02142B" stroke="#38BDF8" strokeWidth="0.75" />
+      {/* Waveform Trace on screen */}
+      <path d="M 41 28 Q 44 24 46 27 T 49 22" fill="none" stroke="#00E676" strokeWidth="0.8" />
+
+      {/* AC / DC Conduit Bottom Entry Glands */}
+      <circle cx="23" cy="38" r="1.5" fill="#E2E8F0" />
+      <circle cx="27" cy="40" r="1.5" fill="#E2E8F0" />
+
+      {/* Running Beacon Indicator */}
+      <circle cx="35" cy="8" r="1.8" fill={isCharging ? "#00F0FF" : "#00E676"} />
+    </svg>
+  );
+}
+
+function GridPylonVector({ isImport = true }: { isImport?: boolean }) {
+  return (
+    <svg viewBox="0 0 70 54" className="w-full h-full drop-shadow-md overflow-visible">
+      {/* Foundation Concrete Footing */}
+      <polygon points="26,45 35,41 44,45 35,49" fill="#1E293B" stroke="#475569" strokeWidth="0.8" />
+
+      {/* Central Pylon Spine */}
+      <line x1="35" y1="6" x2="35" y2="45" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
+
+      {/* Multi-tier Lattice Cross-Arms */}
+      <line x1="21" y1="15" x2="49" y2="15" stroke="#94A3B8" strokeWidth="1.4" strokeLinecap="round" />
+      <line x1="17" y1="24" x2="53" y2="24" stroke="#94A3B8" strokeWidth="1.4" strokeLinecap="round" />
+      <line x1="24" y1="33" x2="46" y2="33" stroke="#94A3B8" strokeWidth="1.4" strokeLinecap="round" />
+
+      {/* Structural Diagonal Lattice Bracing */}
+      <line x1="21" y1="15" x2="35" y2="6" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="49" y1="15" x2="35" y2="6" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="21" y1="15" x2="35" y2="24" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="49" y1="15" x2="35" y2="24" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="17" y1="24" x2="35" y2="33" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="53" y1="24" x2="35" y2="33" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="24" y1="33" x2="35" y2="45" stroke="#64748B" strokeWidth="0.8" />
+      <line x1="46" y1="33" x2="35" y2="45" stroke="#64748B" strokeWidth="0.8" />
+
+      {/* Insulator Strings (Violet Ceramic Discs) */}
+      <circle cx="21" cy="17" r="1.8" fill="#9D4EDD" />
+      <circle cx="49" cy="17" r="1.8" fill="#9D4EDD" />
+      <circle cx="17" cy="26" r="1.8" fill="#9D4EDD" />
+      <circle cx="53" cy="26" r="1.8" fill="#9D4EDD" />
+
+      {/* Overhead High-Tension Transmission Catenary Lines */}
+      <path d="M 6 22 Q 17 28 27 25" fill="none" stroke="#9D4EDD" strokeWidth="0.9" strokeDasharray="2 1" />
+      <path d="M 43 25 Q 53 28 64 22" fill="none" stroke="#9D4EDD" strokeWidth="0.9" strokeDasharray="2 1" />
+
+      {/* Top Earth Wire Spike */}
+      <circle cx="35" cy="5" r="1.5" fill={isImport ? "#9D4EDD" : "#00E676"} />
+    </svg>
+  );
+}
+
+function DieselGeneratorVector({ isRunning = false }: { isRunning?: boolean }) {
+  return (
+    <svg viewBox="0 0 70 54" className="w-full h-full drop-shadow-md overflow-visible">
+      <defs>
+        <linearGradient id="dg-canopy-top" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#475569" />
+          <stop offset="100%" stopColor="#1E293B" />
+        </linearGradient>
+      </defs>
+
+      {/* Skid Base with Fuel Tank */}
+      <polygon points="12,39 35,27 58,39 35,51" fill="#0F172A" stroke="#334155" strokeWidth="1" />
+
+      {/* Genset Enclosure Left Side */}
+      <polygon points="15,19 35,29 35,44 15,34" fill="#1E293B" stroke="#475569" strokeWidth="0.8" />
+
+      {/* Genset Enclosure Right Side with Safety Orange Panel */}
+      <polygon points="35,29 55,19 55,34 35,44" fill="#334155" stroke="#475569" strokeWidth="0.8" />
+      <polygon points="39,27 51,21 51,32 39,38" fill={isRunning ? "#EA580C" : "#9A3412"} stroke="#FF6B00" strokeWidth="0.75" />
+
+      {/* Roof Isometric Plane */}
+      <polygon points="15,19 35,9 55,19 35,29" fill="url(#dg-canopy-top)" stroke="#64748B" strokeWidth="0.8" />
+
+      {/* Radiator Louver Grille (Front) */}
+      <line x1="19" y1="28" x2="31" y2="34" stroke="#94A3B8" strokeWidth="0.9" />
+      <line x1="19" y1="31" x2="31" y2="37" stroke="#94A3B8" strokeWidth="0.9" />
+
+      {/* Turbo Exhaust Silencer Stack with Rain Flap */}
+      <rect x="42" y="8" width="4" height="8" rx="1" fill="#64748B" stroke="#94A3B8" strokeWidth="0.6" />
+      <line x1="41" y1="7" x2="47" y2="6" stroke="#EA580C" strokeWidth="1.2" strokeLinecap="round" />
+
+      {/* Emergency Stop Button (Red) */}
+      <circle cx="37" cy="34" r="1.3" fill="#FF1744" />
+      {/* Running Status Beacon */}
+      <circle cx="49" cy="24" r="1.3" fill={isRunning ? "#00E676" : "#64748B"} />
+    </svg>
+  );
+}
+
+function BessContainerVector({ isCharging = false }: { isCharging?: boolean }) {
+  return (
+    <svg viewBox="0 0 70 54" className="w-full h-full drop-shadow-md overflow-visible">
+      <defs>
+        <linearGradient id="bess-top-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0369A1" />
+          <stop offset="100%" stopColor="#0F172A" />
+        </linearGradient>
+      </defs>
+
+      {/* Heavy-Duty Concrete Plinth */}
+      <polygon points="10,38 35,25 60,38 35,51" fill="#0B132B" stroke="#1E293B" strokeWidth="1" />
+
+      {/* Container Left Face (Dual Doors with Ribbing) */}
+      <polygon points="13,17 35,28 35,45 13,34" fill="#0F172A" stroke="#0284C7" strokeWidth="0.8" />
+      {/* Door Division & Latches */}
+      <line x1="24" y1="23" x2="24" y2="40" stroke="#0284C7" strokeWidth="0.8" />
+      <rect x="22" y="30" width="1.5" height="4" rx="0.5" fill="#38BDF8" />
+      <rect x="25" y="31" width="1.5" height="4" rx="0.5" fill="#38BDF8" />
+
+      {/* Container Right Face (HVAC Chiller End) */}
+      <polygon points="35,28 57,17 57,34 35,45" fill="#1E293B" stroke="#0284C7" strokeWidth="0.8" />
+      {/* Integrated Liquid Chiller Radiator Grill */}
+      <rect x="40" y="22" width="12" height="15" rx="1.5" fill="#02142B" stroke="#00F0FF" strokeWidth="0.75" />
+      <circle cx="46" cy="29.5" r="4" fill="none" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="3 2" />
+
+      {/* Container Roof (Top Isometric Plane) */}
+      <polygon points="13,17 35,6 57,17 35,28" fill="url(#bess-top-grad)" stroke="#00F0FF" strokeWidth="1" />
+
+      {/* Glowing Laser Cyan Status Light Bar */}
+      <line x1="16" y1="18.5" x2="33" y2="27" stroke="#00F0FF" strokeWidth="1.5" strokeLinecap="round" />
+
+      {/* Status Beacon Indicator */}
+      <circle cx="35" cy="9" r="1.8" fill={isCharging ? "#00F0FF" : "#00E676"} />
+    </svg>
+  );
+}
+
+function BuildingFacilityVector() {
+  return (
+    <svg viewBox="0 0 70 54" className="w-full h-full drop-shadow-md overflow-visible">
+      {/* Base Grounds & Pavement */}
+      <polygon points="12,39 35,27 58,39 35,51" fill="#1E293B" stroke="#334155" strokeWidth="0.8" />
+
+      {/* Commercial Building Left Glass Curtain Wall */}
+      <polygon points="16,18 35,27 35,45 16,36" fill="#1E293B" stroke="#475569" strokeWidth="0.8" />
+      {/* Interior Illuminated Window Lights (Left) */}
+      <rect x="20" y="24" width="3" height="4" rx="0.5" fill="#38BDF8" opacity="0.9" />
+      <rect x="26" y="27" width="3" height="4" rx="0.5" fill="#38BDF8" opacity="0.9" />
+      <rect x="20" y="30" width="3" height="4" rx="0.5" fill="#FF2A85" opacity="0.9" />
+      <rect x="26" y="33" width="3" height="4" rx="0.5" fill="#38BDF8" opacity="0.9" />
+
+      {/* Commercial Building Right Glass Curtain Wall */}
+      <polygon points="35,27 54,18 54,36 35,45" fill="#0F172A" stroke="#475569" strokeWidth="0.8" />
+      {/* Interior Illuminated Window Lights (Right) */}
+      <rect x="39" y="27" width="3" height="4" rx="0.5" fill="#38BDF8" opacity="0.9" />
+      <rect x="45" y="24" width="3" height="4" rx="0.5" fill="#FF2A85" opacity="0.9" />
+      <rect x="39" y="33" width="3" height="4" rx="0.5" fill="#38BDF8" opacity="0.9" />
+      <rect x="45" y="30" width="3" height="4" rx="0.5" fill="#38BDF8" opacity="0.9" />
+
+      {/* Rooftop Isometric Plane */}
+      <polygon points="16,18 35,9 54,18 35,27" fill="#334155" stroke="#FF2A85" strokeWidth="1" />
+
+      {/* Rooftop Penthouse & HVAC Chiller */}
+      <polygon points="30,13 38,9 43,11 35,15" fill="#475569" stroke="#64748B" strokeWidth="0.6" />
+      <line x1="38" y1="9" x2="38" y2="4" stroke="#94A3B8" strokeWidth="1" strokeLinecap="round" />
+
+      {/* Adjacent EV Charging Kiosk Pillar */}
+      <polygon points="50,38 54,36 54,44 50,46" fill="#0284C7" stroke="#38BDF8" strokeWidth="0.6" />
+      <circle cx="52" cy="40" r="0.8" fill="#00E676" />
+    </svg>
+  );
+}
+
+/* ==========================================================================
+   Main SystemTopologyVisualizer Component
+   ========================================================================== */
+
 export function SystemTopologyVisualizer({
   site,
   className = "",
@@ -311,17 +574,9 @@ export function SystemTopologyVisualizer({
                 </span>
               </div>
 
-              {/* 3D Isometric Solar Illustration */}
-              <div className="my-1 size-10 sm:size-11 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
-                <svg viewBox="0 0 60 50" className="w-full h-full drop-shadow">
-                  <polygon points="6,25 30,12 54,25 30,38" fill="#1E293B" stroke="#FFD600" strokeWidth="1.2" />
-                  <line x1="18" y1="18" x2="42" y2="31" stroke="#38BDF8" strokeWidth="0.8" />
-                  <line x1="30" y1="12" x2="30" y2="38" stroke="#38BDF8" strokeWidth="0.8" />
-                  <line x1="6" y1="25" x2="54" y2="25" stroke="#38BDF8" strokeWidth="0.8" />
-                  <polygon points="30,38 54,25 54,32 30,45" fill="#0F172A" />
-                  <polygon points="6,25 30,38 30,45 6,32" fill="#334155" />
-                  <rect x="42" y="30" width="10" height="13" rx="1.5" fill="#0284C7" stroke="#38BDF8" strokeWidth="0.8" />
-                </svg>
+              {/* High-Definition 3D Isometric Solar Vector */}
+              <div className="my-1 size-11 sm:size-12 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
+                <SolarArrayVector isActive={solarKw > 0} />
               </div>
 
               {/* Kilowatt Badge & Sub-metric */}
@@ -346,18 +601,9 @@ export function SystemTopologyVisualizer({
                 </span>
               </div>
 
-              {/* 3D Isometric Cabinet */}
-              <div className="my-1 size-10 sm:size-11 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
-                <svg viewBox="0 0 60 50" className="w-full h-full drop-shadow">
-                  <polygon points="12,16 30,7 48,16 30,25" fill="#475569" stroke="#94A3B8" strokeWidth="0.8" />
-                  <polygon points="30,25 48,16 48,42 30,49" fill="#1E293B" stroke="#64748B" strokeWidth="0.8" />
-                  <polygon points="12,16 30,25 30,49 12,42" fill="#334155" stroke="#64748B" strokeWidth="0.8" />
-                  <line x1="16" y1="25" x2="26" y2="30" stroke="#94A3B8" strokeWidth="0.75" />
-                  <line x1="16" y1="31" x2="26" y2="36" stroke="#94A3B8" strokeWidth="0.75" />
-                  <line x1="34" y1="30" x2="44" y2="25" stroke="#94A3B8" strokeWidth="0.75" />
-                  <line x1="34" y1="36" x2="44" y2="31" stroke="#94A3B8" strokeWidth="0.75" />
-                  <circle cx="30" cy="18" r="1.5" fill="#00E676" />
-                </svg>
+              {/* High-Definition 3D Isometric PCS Vector */}
+              <div className="my-1 size-11 sm:size-12 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
+                <PcsCabinetVector isCharging={isBessCharging} />
               </div>
 
               {/* Kilowatt Badge & Sub-metric */}
@@ -384,20 +630,9 @@ export function SystemTopologyVisualizer({
                 </span>
               </div>
 
-              {/* 3D Isometric Transmission Pylon */}
-              <div className="my-1 size-10 sm:size-11 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
-                <svg viewBox="0 0 60 50" className="w-full h-full drop-shadow">
-                  <line x1="30" y1="6" x2="30" y2="46" stroke="#94A3B8" strokeWidth="1.2" />
-                  <line x1="16" y1="16" x2="44" y2="16" stroke="#94A3B8" strokeWidth="1.2" />
-                  <line x1="20" y1="26" x2="40" y2="26" stroke="#94A3B8" strokeWidth="1.2" />
-                  <line x1="24" y1="36" x2="36" y2="36" stroke="#94A3B8" strokeWidth="1.2" />
-                  <line x1="16" y1="16" x2="30" y2="6" stroke="#64748B" strokeWidth="0.8" />
-                  <line x1="44" y1="16" x2="30" y2="6" stroke="#64748B" strokeWidth="0.8" />
-                  <line x1="16" y1="16" x2="30" y2="26" stroke="#64748B" strokeWidth="0.8" />
-                  <line x1="44" y1="16" x2="30" y2="26" stroke="#64748B" strokeWidth="0.8" />
-                  <circle cx="16" cy="16" r="1.5" fill="#9D4EDD" />
-                  <circle cx="44" cy="16" r="1.5" fill="#9D4EDD" />
-                </svg>
+              {/* High-Definition 3D Isometric Grid Pylon Vector */}
+              <div className="my-1 size-11 sm:size-12 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
+                <GridPylonVector isImport={isGridImport} />
               </div>
 
               {/* Kilowatt Badge & Sub-metric */}
@@ -426,16 +661,9 @@ export function SystemTopologyVisualizer({
                 </span>
               </div>
 
-              {/* 3D Isometric Generator */}
-              <div className="my-1 size-10 sm:size-11 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
-                <svg viewBox="0 0 60 50" className="w-full h-full drop-shadow">
-                  <polygon points="12,18 30,9 48,18 30,27" fill="#64748B" stroke="#94A3B8" strokeWidth="0.8" />
-                  <polygon points="30,27 48,18 48,40 30,47" fill="#1E293B" stroke="#475569" strokeWidth="0.8" />
-                  <polygon points="12,18 30,27 30,47 12,40" fill="#334155" stroke="#475569" strokeWidth="0.8" />
-                  <circle cx="21" cy="33" r="5" fill="#0F172A" stroke={isDgRunning ? "#FF6B00" : "#64748B"} strokeWidth="1" />
-                  <rect x="34" y="27" width="10" height="9" rx="1" fill={isDgRunning ? "#EA580C" : "#475569"} />
-                  <rect x="36" y="8" width="3" height="7" rx="0.5" fill="#475569" />
-                </svg>
+              {/* High-Definition 3D Isometric Generator Vector */}
+              <div className="my-1 size-11 sm:size-12 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
+                <DieselGeneratorVector isRunning={isDgRunning} />
               </div>
 
               {/* Kilowatt Badge & Sub-metric */}
@@ -460,18 +688,9 @@ export function SystemTopologyVisualizer({
                 </span>
               </div>
 
-              {/* 3D Isometric BESS Container */}
-              <div className="my-1 size-10 sm:size-11 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
-                <svg viewBox="0 0 60 50" className="w-full h-full drop-shadow">
-                  <polygon points="10,16 30,6 50,16 30,26" fill="#0284C7" stroke="#38BDF8" strokeWidth="1" />
-                  <polygon points="30,26 50,16 50,42 30,50" fill="#0F172A" stroke="#0284C7" strokeWidth="0.8" />
-                  <polygon points="10,16 30,26 30,50 10,42" fill="#1E293B" stroke="#0284C7" strokeWidth="0.8" />
-                  <line x1="15" y1="25" x2="15" y2="43" stroke="#38BDF8" strokeWidth="0.75" />
-                  <line x1="20" y1="28" x2="20" y2="45" stroke="#38BDF8" strokeWidth="0.75" />
-                  <line x1="25" y1="30" x2="25" y2="47" stroke="#38BDF8" strokeWidth="0.75" />
-                  <rect x="35" y="27" width="10" height="15" rx="1" fill="#0369A1" stroke="#00F0FF" strokeWidth="0.75" />
-                  <circle cx="40" cy="31" r="1.5" fill="#00E676" />
-                </svg>
+              {/* High-Definition 3D Isometric BESS Vector */}
+              <div className="my-1 size-11 sm:size-12 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
+                <BessContainerVector isCharging={isBessCharging} />
               </div>
 
               {/* Kilowatt Badge & Mini SoC Bar */}
@@ -504,21 +723,9 @@ export function SystemTopologyVisualizer({
                 </span>
               </div>
 
-              {/* 3D Isometric Commercial Facility */}
-              <div className="my-1 size-10 sm:size-11 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
-                <svg viewBox="0 0 60 50" className="w-full h-full drop-shadow">
-                  <polygon points="14,16 30,7 46,16 30,25" fill="#64748B" stroke="#94A3B8" strokeWidth="0.8" />
-                  <polygon points="30,25 46,16 46,45 30,51" fill="#1E293B" stroke="#475569" strokeWidth="0.8" />
-                  <polygon points="14,16 30,25 30,51 14,45" fill="#334155" stroke="#475569" strokeWidth="0.8" />
-                  <rect x="18" y="24" width="3" height="4" fill="#38BDF8" />
-                  <rect x="24" y="27" width="3" height="4" fill="#38BDF8" />
-                  <rect x="18" y="32" width="3" height="4" fill="#38BDF8" />
-                  <rect x="24" y="35" width="3" height="4" fill="#38BDF8" />
-                  <rect x="34" y="27" width="3" height="4" fill="#38BDF8" />
-                  <rect x="40" y="24" width="3" height="4" fill="#38BDF8" />
-                  <rect x="34" y="35" width="3" height="4" fill="#38BDF8" />
-                  <rect x="40" y="32" width="3" height="4" fill="#38BDF8" />
-                </svg>
+              {/* High-Definition 3D Isometric Commercial Facility Vector */}
+              <div className="my-1 size-11 sm:size-12 mx-auto flex items-center justify-center transition-transform group-hover:scale-105">
+                <BuildingFacilityVector />
               </div>
 
               {/* Kilowatt Badge & Sub-metric */}

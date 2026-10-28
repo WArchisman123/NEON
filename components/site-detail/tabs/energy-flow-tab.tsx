@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { SiteRecord } from "@/lib/energy/types";
 import { SystemTopologyVisualizer } from "@/components/energy-flow/system-topology-visualizer";
+import { PowerFlowTrendsChart } from "@/components/energy-flow/power-flow-trends-chart";
 
 interface EnergyFlowTabProps {
   site: SiteRecord;
@@ -10,7 +11,6 @@ interface EnergyFlowTabProps {
 
 export function EnergyFlowTab({ site }: EnergyFlowTabProps) {
   const [flowMode, setFlowMode] = useState<"day" | "night" | "excess">("day");
-  const [trendRange, setTrendRange] = useState<"5m" | "15m" | "1h" | "6h" | "12h" | "1d">("1h");
 
   // Summary accumulator values from competitor Page 2
   const solarKw = Number(site.solar_power_kw || 89.3);
@@ -18,15 +18,6 @@ export function EnergyFlowTab({ site }: EnergyFlowTabProps) {
   const gridKw = Number(site.grid_power_kw || 76.6);
   const bessKw = Number(site.live_bess_power_kw || -74.4);
   const bessSoc = Number(site.bess_soc_pct || 21.7);
-
-  // Time-series mock trend for 5 streams
-  const trendPoints = [
-    { time: "10:00", solar: 72, grid: 80, battery: -60, building: 92 },
-    { time: "10:15", solar: 81, grid: 75, battery: -70, building: 96 },
-    { time: "10:30", solar: 86, grid: 78, battery: -72, building: 98 },
-    { time: "10:45", solar: 89, grid: 76, battery: -74, building: 100 },
-    { time: "11:00", solar: 92, grid: 74, battery: -75, building: 101 },
-  ];
 
   return (
     <div className="flex flex-col gap-5 animate-in fade-in-50 duration-200">
@@ -218,86 +209,7 @@ export function EnergyFlowTab({ site }: EnergyFlowTabProps) {
       </div>
 
       {/* 5. Power Flow Trends Multi-Series Chart */}
-      <div className="p-4 sm:p-5 rounded-xl bg-theme-card border border-theme-subtle flex flex-col gap-3 font-mono">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-subtle pb-3">
-          <div>
-            <h3 className="text-xs sm:text-sm font-bold text-theme-primary uppercase">
-              Power Flow Multi-Stream Trends
-            </h3>
-            <p className="text-[10px] text-theme-secondary">
-              Synchronized 5-channel power dispatch trajectory
-            </p>
-          </div>
-
-          <div className="flex items-center gap-1">
-            {(["5m", "15m", "1h", "6h", "12h", "1d"] as const).map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setTrendRange(r)}
-                className={`px-2 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${
-                  trendRange === r
-                    ? "bg-[#FF2A85] text-white"
-                    : "bg-theme-elevated text-theme-secondary hover:text-theme-primary"
-                }`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-4 text-[11px]">
-          <div className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[#FFD600]" />
-            <span className="text-theme-secondary">Solar PV</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[#00F0FF]" />
-            <span className="text-theme-secondary">BESS Power</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[#9D4EDD]" />
-            <span className="text-theme-secondary">Grid Power</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-[#00E676]" />
-            <span className="text-theme-secondary">Facility Demand</span>
-          </div>
-        </div>
-
-        {/* Visualized Stack / Step Bars */}
-        <div className="h-40 w-full flex items-end justify-between gap-3 p-3 rounded-lg bg-theme-elevated/40 border border-theme-subtle">
-          {trendPoints.map((pt, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-              <div className="w-full flex items-end justify-center gap-1 h-3/4">
-                <div
-                  className="w-1/4 bg-[#FFD600] rounded-t-sm"
-                  style={{ height: `${(pt.solar / 110) * 100}%` }}
-                  title={`Solar: ${pt.solar} kW`}
-                />
-                <div
-                  className="w-1/4 bg-cyan-400 rounded-t-sm"
-                  style={{ height: `${(Math.abs(pt.battery) / 110) * 100}%` }}
-                  title={`Battery: ${pt.battery} kW`}
-                />
-                <div
-                  className="w-1/4 bg-purple-500 rounded-t-sm"
-                  style={{ height: `${(pt.grid / 110) * 100}%` }}
-                  title={`Grid: ${pt.grid} kW`}
-                />
-                <div
-                  className="w-1/4 bg-[#00E676] rounded-t-sm"
-                  style={{ height: `${(pt.building / 110) * 100}%` }}
-                  title={`Load: ${pt.building} kW`}
-                />
-              </div>
-              <span className="text-[10px] text-theme-muted">{pt.time}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <PowerFlowTrendsChart />
     </div>
   );
 }
